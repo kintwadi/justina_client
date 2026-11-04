@@ -1,0 +1,23 @@
+// ==========================================================================
+// Design tokens shared across the app.
+// ==========================================================================
+
+$font-display: 'Cormorant Garamond', serif;
+$font-body: 'Inter', sans-serif;
+
+$color-bg: #faf8f5;
+$color-bg-dark: #f0ebe4;
+$color-text: #2c2420;
+$color-text-light: #7a6e65;
+$color-accent: #8b6914;
+$color-accent-light: #c4983a;
+$color-white: #ffffff;
+$color-border: #e5ddd3;
+$color-shadow: rgba(44, 36, 32, 0.08);
+$color-footer: #1a1412;
+$color-danger: #c0392b;
+
+$bp-wide: 1100px;
+$bp-tablet: 1024px;
+$bp-mobile: 768px;
+$bp-small: 480px;

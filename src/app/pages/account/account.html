@@ -1,0 +1,111 @@
+<section class="account-shell">
+  <div class="account-header">
+    <div>
+      <p class="eyebrow">{{ locale.t('account.eyebrow') }}</p>
+      <h1>{{ fullName() || locale.t('account.titleFallback') }}</h1>
+      <p class="intro">
+        {{ locale.t('account.intro') }}
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a class="ghost-btn" routerLink="/shop">{{ locale.t('account.continueShopping') }}</a>
+      <a class="primary-btn" routerLink="/forgot-password">{{ locale.t('account.resetPassword') }}</a>
+    </div>
+  </div>
+
+  <div class="account-grid">
+    <aside class="profile-card">
+      <div class="card-heading">
+        <app-icon name="user" [size]="18" />
+        <h2>{{ locale.t('account.settings') }}</h2>
+      </div>
+
+      <div class="profile-list">
+        <div>
+          <span>{{ locale.t('account.name') }}</span>
+          <strong>{{ fullName() || locale.t('account.notProvided') }}</strong>
+        </div>
+        <div>
+          <span>{{ locale.t('account.email') }}</span>
+          <strong>{{ user()?.email }}</strong>
+        </div>
+        <div>
+          <span>{{ locale.t('account.memberSince') }}</span>
+          <strong>{{ user()?.createdAt ? formatDate(user()!.createdAt) : locale.t('account.justNow') }}</strong>
+        </div>
+      </div>
+
+      <p class="profile-note">
+        {{ locale.t('account.passwordNote') }}
+      </p>
+    </aside>
+
+    <section class="orders-card" id="orders">
+      <div class="card-heading">
+        <app-icon name="book" [size]="18" />
+        <h2>{{ locale.t('account.orders') }}</h2>
+      </div>
+
+      @if (loading()) {
+        <div class="empty-state">
+          <p>{{ locale.t('account.loadingOrders') }}</p>
+        </div>
+      } @else if (loadError()) {
+        <div class="alert alert-error">{{ loadError() }}</div>
+      } @else if (!orders().length) {
+        <div class="empty-state">
+          <p>{{ locale.t('account.emptyOrders') }}</p>
+          <a class="ghost-btn" routerLink="/shop">{{ locale.t('account.browseCollection') }}</a>
+        </div>
+      } @else {
+        <div class="orders-list">
+          @for (order of orders(); track order.id) {
+            <article class="order-card">
+              <div class="order-top">
+                <div>
+                  <p class="order-number">{{ order.orderNumber }}</p>
+                  <p class="order-date">{{ formatDate(order.createdAt) }}</p>
+                </div>
+
+                <div class="order-meta">
+                  <span class="pill">{{ orderStatusLabel(order.status) }}</span>
+                  <span class="pill secondary">{{ paymentStatusLabel(order.paymentStatus) }}</span>
+                </div>
+              </div>
+
+              <div class="order-summary">
+                <div>
+                  <span>{{ locale.t('account.items') }}</span>
+                  <strong>{{ itemCount(order) }}</strong>
+                </div>
+                <div>
+                  <span>{{ locale.t('account.total') }}</span>
+                  <strong>{{ formatMoney(order.total, order.currency) }}</strong>
+                </div>
+              </div>
+
+              <div class="order-items">
+                @for (item of order.items; track item.productId + '-' + item.variantSku) {
+                  <div class="order-item">
+                    <img [src]="item.imageUrl" [alt]="item.productName" />
+                    <div>
+                      <strong>{{ item.productName }}</strong>
+                      <p>
+                        {{ locale.t('account.qty') }} {{ item.quantity }}
+                        @if (item.variantSku) {
+                          · {{ item.variantSku }}
+                        }
+                      </p>
+                    </div>
+                    <span>{{ formatMoney(item.lineTotal, order.currency) }}</span>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</section>

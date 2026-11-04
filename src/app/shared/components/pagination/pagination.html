@@ -1,0 +1,40 @@
+@if (totalPages() > 1) {
+  <nav class="pagination" aria-label="Pagination">
+    <button
+      type="button"
+      class="page-step"
+      [disabled]="!canGoPrev()"
+      [attr.aria-label]="previousLabel()"
+      (click)="previous()"
+    >
+      <app-icon name="chevron-left" [size]="16" />
+    </button>
+
+    @for (item of items(); track $index) {
+      @if (item.value === null) {
+        <span class="page-gap" aria-hidden="true">{{ item.label }}</span>
+      } @else {
+        <button
+          type="button"
+          class="page-number"
+          [class.active]="item.current"
+          [attr.aria-current]="item.current ? 'page' : null"
+          [attr.aria-label]="item.ariaLabel"
+          (click)="select(item.value)"
+        >
+          {{ item.label }}
+        </button>
+      }
+    }
+
+    <button
+      type="button"
+      class="page-step"
+      [disabled]="!canGoNext()"
+      [attr.aria-label]="nextLabel()"
+      (click)="next()"
+    >
+      <app-icon name="chevron-right" [size]="16" />
+    </button>
+  </nav>
+}

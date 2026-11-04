@@ -1,0 +1,3205 @@
+<div class="page">
+  <section class="section admin">
+    <div class="admin-tabs" [class.expanded]="tabsMenuOpen()">
+      <div class="admin-tabs-primary">
+        <button
+          type="button"
+          class="tab-btn"
+          [class.active]="activeTab() === 'products'"
+          (click)="selectTab('products')"
+        >
+          <app-icon name="layers" [size]="16" />
+          {{ t('admin.tab.products') }}
+        </button>
+        <button
+          type="button"
+          class="tab-btn tab-toggle"
+          [class.active]="tabsMenuOpen()"
+          (click)="toggleTabsMenu()"
+        >
+          <app-icon [name]="tabsMenuOpen() ? 'close' : 'menu'" [size]="16" />
+        </button>
+      </div>
+
+      @if (tabsMenuOpen()) {
+        <div class="admin-tabs-menu">
+          @if (canManageProducts()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'products'"
+              (click)="openCatalogSetup()"
+            >
+              <app-icon name="tool" [size]="16" />
+              {{ t('admin.tab.catalogSetup') }}
+            </button>
+          }
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab() === 'orders'"
+            (click)="selectTab('orders')"
+          >
+            <app-icon name="book" [size]="16" />
+            {{ t('admin.tab.orders') }}
+          </button>
+          @if (canManageCustomOrders()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'customOrders'"
+              (click)="selectTab('customOrders')"
+            >
+              <app-icon name="tool" [size]="16" />
+              {{ t('admin.tab.customOrders') }}
+            </button>
+          }
+          @if (canManageUsers()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'users'"
+              (click)="selectTab('users')"
+            >
+              <app-icon name="user" [size]="16" />
+              {{ t('admin.tab.users') }}
+            </button>
+          }
+          @if (canManageContact()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'contact'"
+              (click)="selectTab('contact')"
+            >
+              <app-icon name="pen" [size]="16" />
+              {{ t('admin.tab.contact') }}
+            </button>
+          }
+          @if (canManageHistory()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'history'"
+              (click)="selectTab('history')"
+            >
+              <app-icon name="book" [size]="16" />
+              {{ t('admin.tab.history') }}
+            </button>
+          }
+          @if (canManageSiteContent()) {
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'home'"
+              (click)="selectTab('home')"
+            >
+              <app-icon name="layers" [size]="16" />
+              {{ t('admin.tab.home') }}
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'header'"
+              (click)="selectTab('header')"
+            >
+              <app-icon name="menu" [size]="16" />
+              {{ t('admin.tab.header') }}
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'shop'"
+              (click)="selectTab('shop')"
+            >
+              <app-icon name="cart" [size]="16" />
+              {{ t('admin.tab.shop') }}
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'collections'"
+              (click)="selectTab('collections')"
+            >
+              <app-icon name="star" [size]="16" />
+              {{ t('admin.tab.collections') }}
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'reviews'"
+              (click)="selectTab('reviews')"
+            >
+              <app-icon name="thumb-up" [size]="16" />
+              {{ t('admin.tab.reviews') }}
+            </button>
+            <button
+              type="button"
+              class="tab-btn"
+              [class.active]="activeTab() === 'footer'"
+              (click)="selectTab('footer')"
+            >
+              <app-icon name="globe" [size]="16" />
+              {{ t('admin.tab.footer') }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    @if (activeTab() === 'products') {
+    <header class="admin-head">
+      <div class="admin-heading">
+        <h1>{{ t('admin.products.title') }}</h1>
+        <p>{{ t('admin.products.subtitle') }}</p>
+      </div>
+      @if (canManageProducts()) {
+        <button type="button" class="btn-primary" (click)="openCreate()">
+          <app-icon name="plus" [size]="16" />
+          {{ t('admin.products.newProduct') }}
+        </button>
+      }
+    </header>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-label">{{ t('admin.products.totalProducts') }}</span>
+        <span class="stat-value">{{ totalCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">{{ t('admin.products.inStock') }}</span>
+        <span class="stat-value">{{ inStockCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">{{ t('admin.products.featured') }}</span>
+        <span class="stat-value">{{ featuredCount() }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">{{ t('admin.products.onSale') }}</span>
+        <span class="stat-value">{{ onSaleCount() }}</span>
+      </div>
+    </div>
+
+    @if (canManageProducts()) {
+      <section id="catalog-setup-section" class="catalog-setup">
+        <div class="setup-head">
+          <div>
+            <h2>{{ t('admin.products.catalogTitle') }}</h2>
+            <p>{{ t('admin.products.catalogSubtitle') }}</p>
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadCatalogMetadata()">{{ t('admin.common.refresh') }}</button>
+        </div>
+
+        @if (metadataError()) {
+          <div class="banner error inline">{{ metadataError() }}</div>
+        }
+
+        <div class="setup-grid">
+          <article class="setup-card">
+            <div class="setup-card-head">
+              <div>
+                <span class="stat-label">{{ t('admin.products.categories') }}</span>
+                <strong>{{ totalCategories() }}</strong>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.categoryLabel') }}</span>
+                <input
+                  [ngModel]="categoryForm().label"
+                  (ngModelChange)="updateCategoryForm('label', $event)"
+                />
+              </label>
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.slug') }}</span>
+                <input
+                  [placeholder]="t('admin.products.slugPlaceholder')"
+                  [ngModel]="categoryForm().slug"
+                  (ngModelChange)="updateCategoryForm('slug', $event)"
+                />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.description') }}</span>
+                <input
+                  [ngModel]="categoryForm().description"
+                  (ngModelChange)="updateCategoryForm('description', $event)"
+                />
+              </label>
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.displayOrder') }}</span>
+                <input
+                  type="number"
+                  min="0"
+                  [ngModel]="categoryForm().displayOrder"
+                  (ngModelChange)="updateCategoryForm('displayOrder', $event)"
+                />
+              </label>
+            </div>
+
+            <button
+              type="button"
+              class="btn-primary catalog-save-btn"
+              [disabled]="categorySaving() || metadataLoading()"
+              (click)="saveCategoryMetadata()"
+            >
+              {{ categorySaving() ? t('admin.common.saving') : t('admin.products.addCategory') }}
+            </button>
+
+            <div class="meta-list">
+              @for (category of categoryMetadata(); track category.id) {
+                <div class="meta-row">
+                  <div>
+                    <strong>{{ category.label }}</strong>
+                    <p>{{ category.slug }} · {{ category.productCount }} {{ t('admin.products.countSuffix') }}</p>
+                  </div>
+                </div>
+              } @empty {
+                <p class="muted">{{ t('admin.products.noManagedCategories') }}</p>
+              }
+            </div>
+          </article>
+
+          <article class="setup-card">
+            <div class="setup-card-head">
+              <div>
+                <span class="stat-label">{{ t('admin.products.productTypes') }}</span>
+                <strong>{{ totalProductTypes() }}</strong>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.typeLabel') }}</span>
+                <input
+                  [ngModel]="productTypeForm().label"
+                  (ngModelChange)="updateProductTypeForm('label', $event)"
+                />
+              </label>
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.slug') }}</span>
+                <input
+                  [placeholder]="t('admin.products.slugPlaceholder')"
+                  [ngModel]="productTypeForm().slug"
+                  (ngModelChange)="updateProductTypeForm('slug', $event)"
+                />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.category') }}</span>
+                <select
+                  [ngModel]="productTypeForm().category"
+                  (ngModelChange)="updateProductTypeForm('category', $event)"
+                >
+                  <option value="">{{ t('admin.products.allCategories') }}</option>
+                  @for (category of categoryMetadata(); track category.id) {
+                    <option [value]="category.slug">{{ category.label }}</option>
+                  }
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">{{ t('admin.products.displayOrder') }}</span>
+                <input
+                  type="number"
+                  min="0"
+                  [ngModel]="productTypeForm().displayOrder"
+                  (ngModelChange)="updateProductTypeForm('displayOrder', $event)"
+                />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field-label">{{ t('admin.products.description') }}</span>
+              <input
+                [ngModel]="productTypeForm().description"
+                (ngModelChange)="updateProductTypeForm('description', $event)"
+              />
+            </label>
+
+            <label class="field">
+              <span class="field-label">{{ t('admin.products.presetFields') }}</span>
+              <textarea
+                rows="3"
+                [placeholder]="t('admin.products.presetPlaceholder')"
+                [ngModel]="productTypeForm().presetFields"
+                (ngModelChange)="updateProductTypeForm('presetFields', $event)"
+              ></textarea>
+            </label>
+
+            <button
+              type="button"
+              class="btn-primary catalog-save-btn"
+              [disabled]="productTypeSaving() || metadataLoading()"
+              (click)="saveProductTypeMetadata()"
+            >
+              {{ productTypeSaving() ? t('admin.common.saving') : t('admin.products.addProductType') }}
+            </button>
+
+            <div class="meta-list">
+              @for (type of productTypeMetadata(); track type.id) {
+                <div class="meta-row">
+                  <div>
+                    <strong>{{ type.label }}</strong>
+                    <p>
+                      {{ type.slug }}
+                      @if (type.category) {
+                        · {{ type.category }}
+                      }
+                    </p>
+                    @if (type.presetFields.length > 0) {
+                      <div class="chip-list">
+                        @for (field of type.presetFields; track field) {
+                          <span class="chip">{{ field }}</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @empty {
+                <p class="muted">{{ t('admin.products.noManagedProductTypes') }}</p>
+              }
+            </div>
+          </article>
+        </div>
+      </section>
+    }
+
+    @if (!canManageProducts()) {
+      <div class="banner info">
+        <span>{{ t('admin.products.operatorNotice') }}</span>
+      </div>
+    }
+
+    @if (loadError()) {
+      <div class="banner error">
+        <span>{{ loadError() }}</span>
+        <button type="button" class="action-btn primary" (click)="loadProducts()">{{ t('admin.common.retry') }}</button>
+      </div>
+    }
+
+    @if (loading()) {
+      <div class="state">{{ t('admin.common.loadingProducts') }}</div>
+    } @else if (!loadError() && totalCount() === 0) {
+      <div class="state empty">
+        <p>{{ t('admin.products.noProducts') }}</p>
+        <button type="button" class="action-btn primary" (click)="openCreate()">
+          {{ t('admin.products.createFirst') }}
+        </button>
+      </div>
+    } @else if (totalCount() > 0) {
+      <div class="table-wrap">
+        <table class="product-table">
+          <thead>
+            <tr>
+              <th class="col-actions">{{ t('admin.common.actions') }}</th>
+              <th>{{ t('admin.products.image') }}</th>
+              <th>{{ t('admin.products.name') }}</th>
+              <th>{{ t('admin.products.category') }}</th>
+              <th>{{ t('admin.products.price') }}</th>
+              <th>{{ t('admin.products.stock') }}</th>
+              <th>{{ t('admin.products.badge') }}</th>
+              <th>{{ t('admin.products.custom') }}</th>
+              <th>{{ t('admin.products.featured') }}</th>
+              <th class="col-id">{{ t('admin.products.id') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of products(); track product.id) {
+              <tr>
+                <td class="col-actions">
+                  @if (canManageProducts()) {
+                    <div class="row-actions">
+                      <button
+                        type="button"
+                        class="icon-btn"
+                        title="Edit product"
+                        (click)="openEdit(product)"
+                      >
+                        <app-icon name="edit" [size]="16" />
+                      </button>
+                      <button
+                        type="button"
+                        class="icon-btn danger"
+                        title="Delete product"
+                        (click)="requestDelete(product)"
+                      >
+                        <app-icon name="trash" [size]="16" />
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="muted">View only</span>
+                  }
+                </td>
+                <td>
+                  <div class="thumb">
+                    <div class="media-fill" [class]="product.imageClass || 'prod-img-1'">
+                      @if (product.image) {
+                        <img [src]="product.image" [alt]="product.name" />
+                      }
+                    </div>
+                  </div>
+                </td>
+                <td class="cell-name">{{ product.name }}</td>
+                <td class="cell-cat">{{ product.category }}</td>
+                <td class="cell-price">
+                  <span>{{ price(product.price) }}</span>
+                  @if (product.originalPrice) {
+                    <span class="strike">{{ price(product.originalPrice) }}</span>
+                  }
+                </td>
+                <td>
+                  <span class="pill" [class.on]="product.inStock" [class.off]="!product.inStock">
+                    {{ product.inStock ? 'In Stock' : 'Sold Out' }}
+                  </span>
+                </td>
+                <td>
+                  @if (product.badge) {
+                    <span class="badge">{{ product.badge }}</span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td>
+                  @if (product.customMade) {
+                    <span class="pill secondary">{{ t('admin.access.enabled') }}</span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td>
+                  @if (product.featured) {
+                    <span class="featured-mark"><app-icon name="star" [size]="15" /></span>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td class="col-id">{{ product.id }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <app-pagination
+        [page]="productPage() + 1"
+        [totalItems]="productTotal()"
+        [pageSize]="productPageSize"
+        (pageChange)="changeProductPage($event)"
+      />
+    }
+    }
+
+    @if (activeTab() === 'orders') {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.orders.title') }}</h1>
+          <p>{{ t('admin.orders.subtitle') }}</p>
+        </div>
+        <button type="button" class="ghost-btn" (click)="loadOrders()">{{ t('admin.orders.refresh') }}</button>
+      </header>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.orders.totalOrders') }}</span>
+          <span class="stat-value">{{ totalOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.orders.pending') }}</span>
+          <span class="stat-value">{{ pendingOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.orders.fulfilled') }}</span>
+          <span class="stat-value">{{ fulfilledOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.orders.refunded') }}</span>
+          <span class="stat-value">{{ refundedOrders() }}</span>
+        </div>
+      </div>
+
+      @if (ordersError()) {
+        <div class="banner error">
+          <span>{{ ordersError() }}</span>
+          <button type="button" class="action-btn primary" (click)="loadOrders()">{{ t('admin.common.retry') }}</button>
+        </div>
+      }
+
+      @if (ordersLoading()) {
+        <div class="state">{{ t('admin.common.loadingOrders') }}</div>
+      } @else if (!ordersError() && totalOrders() === 0) {
+        <div class="state empty">
+          <p>{{ t('admin.orders.noOrders') }}</p>
+        </div>
+      } @else if (totalOrders() > 0) {
+        <div class="table-wrap">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th class="col-actions">{{ t('admin.common.actions') }}</th>
+                <th>{{ t('admin.orders.order') }}</th>
+                <th>{{ t('admin.orders.customer') }}</th>
+                <th>{{ t('admin.common.status') }}</th>
+                <th>{{ t('admin.orders.payment') }}</th>
+                <th>{{ t('admin.orders.items') }}</th>
+                <th>{{ t('admin.orders.total') }}</th>
+                <th>{{ t('admin.orders.created') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of pagedOrders(); track order.id) {
+                <tr>
+                  <td class="col-actions">
+                    <button type="button" class="icon-btn" [title]="t('admin.orders.manageOrder')" (click)="openOrder(order)">
+                      <app-icon name="edit" [size]="16" />
+                    </button>
+                  </td>
+                  <td class="cell-name">{{ order.orderNumber }}</td>
+                  <td>{{ order.customerEmail }}</td>
+                  <td><span class="pill on">{{ orderStatusLabel(order.status) }}</span></td>
+                  <td><span class="pill secondary">{{ paymentStatusLabel(order.paymentStatus) }}</span></td>
+                  <td>{{ itemCount(order) }}</td>
+                  <td>{{ formatMoney(order.total, order.currency) }}</td>
+                  <td>{{ formatDate(order.createdAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination
+          [page]="ordersPage()"
+          [totalItems]="totalOrders()"
+          [pageSize]="ordersPageSize"
+          (pageChange)="changeOrdersPage($event)"
+        />
+      }
+    }
+
+    @if (activeTab() === 'customOrders' && canManageCustomOrders()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.customOrders.title') }}</h1>
+          <p>{{ t('admin.customOrders.subtitle') }}</p>
+        </div>
+        <button type="button" class="ghost-btn" (click)="loadCustomOrders()">
+          {{ t('admin.customOrders.refresh') }}
+        </button>
+      </header>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.customOrders.total') }}</span>
+          <span class="stat-value">{{ totalCustomOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.customOrders.submitted') }}</span>
+          <span class="stat-value">{{ submittedCustomOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.customOrders.quoted') }}</span>
+          <span class="stat-value">{{ quotedCustomOrders() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.customOrders.completed') }}</span>
+          <span class="stat-value">{{ completedCustomOrders() }}</span>
+        </div>
+      </div>
+
+      @if (customOrdersError()) {
+        <div class="banner error">
+          <span>{{ customOrdersError() }}</span>
+          <button type="button" class="action-btn primary" (click)="loadCustomOrders()">
+            {{ t('admin.common.retry') }}
+          </button>
+        </div>
+      }
+
+      @if (customOrdersLoading()) {
+        <div class="state">{{ t('admin.customOrders.loading') }}</div>
+      } @else if (!customOrdersError() && totalCustomOrders() === 0) {
+        <div class="state empty">
+          <p>{{ t('admin.customOrders.empty') }}</p>
+        </div>
+      } @else if (totalCustomOrders() > 0) {
+        <div class="table-wrap">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th class="col-actions">{{ t('admin.common.actions') }}</th>
+                <th>{{ t('admin.customOrders.request') }}</th>
+                <th>{{ t('admin.orders.customer') }}</th>
+                <th>{{ t('admin.customOrders.type') }}</th>
+                <th>{{ t('admin.customOrders.product') }}</th>
+                <th>{{ t('admin.common.status') }}</th>
+                <th>{{ t('admin.customOrders.quantity') }}</th>
+                <th>{{ t('admin.orders.created') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (request of pagedCustomOrders(); track request.id) {
+                <tr>
+                  <td class="col-actions">
+                    <button
+                      type="button"
+                      class="icon-btn"
+                      [title]="t('admin.customOrders.manage')"
+                      (click)="openCustomOrder(request)"
+                    >
+                      <app-icon name="edit" [size]="16" />
+                    </button>
+                  </td>
+                  <td class="cell-name">
+                    <strong>{{ request.requestNumber }}</strong>
+                    <div class="muted">{{ request.title }}</div>
+                  </td>
+                  <td>{{ request.customerEmail }}</td>
+                  <td>{{ customOrderTypeLabel(request.type) }}</td>
+                  <td>{{ request.productName || t('admin.customOrders.designFallback') }}</td>
+                  <td><span class="pill secondary">{{ customOrderStatusLabel(request.status) }}</span></td>
+                  <td>{{ request.quantity }}</td>
+                  <td>{{ formatDate(request.createdAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination
+          [page]="customOrdersPage()"
+          [totalItems]="totalCustomOrders()"
+          [pageSize]="customOrdersPageSize"
+          (pageChange)="changeCustomOrdersPage($event)"
+        />
+      }
+    }
+
+    @if (activeTab() === 'users' && canManageUsers()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.users.title') }}</h1>
+          <p>{{ t('admin.users.subtitle') }}</p>
+        </div>
+        <button type="button" class="btn-primary" (click)="openCreateUser()">
+          <app-icon name="plus" [size]="16" />
+          {{ t('admin.users.newUser') }}
+        </button>
+      </header>
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.users.totalUsers') }}</span>
+          <span class="stat-value">{{ totalUsers() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.users.admins') }}</span>
+          <span class="stat-value">{{ adminUsers() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.users.operators') }}</span>
+          <span class="stat-value">{{ operatorUsers() }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">{{ t('admin.users.customers') }}</span>
+          <span class="stat-value">{{ customerUsers() }}</span>
+        </div>
+      </div>
+
+      @if (usersError()) {
+        <div class="banner error">
+          <span>{{ usersError() }}</span>
+          <button type="button" class="action-btn primary" (click)="loadUsers()">{{ t('admin.common.retry') }}</button>
+        </div>
+      }
+
+      @if (usersLoading()) {
+        <div class="state">{{ t('admin.common.loadingUsers') }}</div>
+      } @else if (!usersError() && totalUsers() === 0) {
+        <div class="state empty">
+          <p>{{ t('admin.users.noUsers') }}</p>
+        </div>
+      } @else if (totalUsers() > 0) {
+        <div class="table-wrap">
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th class="col-actions">{{ t('admin.common.actions') }}</th>
+                <th>{{ t('admin.products.name') }}</th>
+                <th>Email</th>
+                <th>{{ t('admin.users.role') }}</th>
+                <th>{{ t('admin.users.access') }}</th>
+                <th>{{ t('admin.users.joined') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of pagedUsers(); track user.id) {
+                <tr>
+                  <td class="col-actions">
+                    @if (user.role !== 'CUSTOMER' || canDeleteUser(user)) {
+                      <div class="row-actions">
+                        @if (user.role !== 'CUSTOMER') {
+                          <button
+                            type="button"
+                            class="icon-btn"
+                            [title]="t('admin.users.editUser')"
+                            (click)="openEditUser(user)"
+                          >
+                            <app-icon name="edit" [size]="16" />
+                          </button>
+                        }
+                        @if (canDeleteUser(user)) {
+                          <button
+                            type="button"
+                            class="icon-btn danger"
+                            [title]="t('admin.users.deleteUser')"
+                            (click)="requestDeleteUser(user)"
+                          >
+                            <app-icon name="trash" [size]="16" />
+                          </button>
+                        }
+                      </div>
+                    } @else {
+                      <span class="muted">{{ t('admin.users.protected') }}</span>
+                    }
+                  </td>
+                  <td class="cell-name">{{ user.firstName }} {{ user.lastName || '' }}</td>
+                  <td>{{ user.email }}</td>
+                  <td><span class="pill" [class.admin]="user.role === 'ADMIN'" [class.operator]="user.role === 'OPERATOR'">{{ userRoleLabel(user.role) }}</span></td>
+                  <td>
+                    <span class="pill" [class.on]="user.enabled" [class.off]="!user.enabled">
+                      {{ accessLabel(user.enabled) }}
+                    </span>
+                  </td>
+                  <td>{{ formatDate(user.createdAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <app-pagination
+          [page]="usersPage()"
+          [totalItems]="totalUsers()"
+          [pageSize]="usersPageSize"
+          (pageChange)="changeUsersPage($event)"
+        />
+      }
+    }
+
+    @if (activeTab() === 'contact' && canManageContact()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.contactTitle') }}</h1>
+          <p>{{ t('admin.content.contactSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadContactContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (contactContentError()) {
+        <div class="banner error inline">{{ contactContentError() }}</div>
+      }
+      @if (contactContentSuccess()) {
+        <div class="banner info inline">{{ contactContentSuccess() }}</div>
+      }
+
+      @if (contactContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingContactContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Page Header & Intro</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Page Title *</span>
+                <input
+                  [ngModel]="contactContentForm().pageTitle"
+                  (ngModelChange)="updateContactContentForm('pageTitle', $event)"
+                />
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Breadcrumb</span>
+                  <input
+                    [ngModel]="contactContentForm().pageCrumb"
+                    (ngModelChange)="updateContactContentForm('pageCrumb', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Subtitle</span>
+                  <input
+                    [ngModel]="contactContentForm().pageSubtitle"
+                    (ngModelChange)="updateContactContentForm('pageSubtitle', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Intro Title *</span>
+                <input
+                  [ngModel]="contactContentForm().introTitle"
+                  (ngModelChange)="updateContactContentForm('introTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Intro Text</span>
+                <textarea
+                  rows="3"
+                  [ngModel]="contactContentForm().introText"
+                  (ngModelChange)="updateContactContentForm('introText', $event)"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Get In Touch Title</span>
+                <input
+                  [ngModel]="contactContentForm().getInTouchTitle"
+                  (ngModelChange)="updateContactContentForm('getInTouchTitle', $event)"
+                />
+              </label>
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Contact Details & Form</span>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Email *</span>
+                  <input
+                    type="email"
+                    [ngModel]="contactContentForm().email"
+                    (ngModelChange)="updateContactContentForm('email', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Phone</span>
+                  <input
+                    [ngModel]="contactContentForm().phone"
+                    (ngModelChange)="updateContactContentForm('phone', $event)"
+                  />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Instagram Handle</span>
+                  <input
+                    [ngModel]="contactContentForm().instagramHandle"
+                    (ngModelChange)="updateContactContentForm('instagramHandle', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Instagram URL</span>
+                  <input
+                    [ngModel]="contactContentForm().instagramUrl"
+                    (ngModelChange)="updateContactContentForm('instagramUrl', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Customer Service Title</span>
+                <input
+                  [ngModel]="contactContentForm().customerServiceTitle"
+                  (ngModelChange)="updateContactContentForm('customerServiceTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Customer Service Text</span>
+                <textarea
+                  rows="3"
+                  [ngModel]="contactContentForm().customerServiceText"
+                  (ngModelChange)="updateContactContentForm('customerServiceText', $event)"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Form Title *</span>
+                <input
+                  [ngModel]="contactContentForm().formTitle"
+                  (ngModelChange)="updateContactContentForm('formTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Form Intro</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="contactContentForm().formIntro"
+                  (ngModelChange)="updateContactContentForm('formIntro', $event)"
+                ></textarea>
+              </label>
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Contact Info Blocks</span>
+                <button type="button" class="link-btn" (click)="addContactInfoBlock()">
+                  <app-icon name="plus" [size]="14" />
+                  Add block
+                </button>
+              </div>
+
+              @for (block of contactContentForm().infoBlocks; track block.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Block title"
+                      [ngModel]="block.title"
+                      (ngModelChange)="updateContactInfoBlock(block.uid, 'title', $event)"
+                    />
+                    <textarea
+                      rows="3"
+                      placeholder="One detail per line"
+                      [ngModel]="block.linesText"
+                      (ngModelChange)="updateContactInfoBlock(block.uid, 'linesText', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove block"
+                    (click)="removeContactInfoBlock(block.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No contact info blocks yet.</p>
+              }
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Contact Subjects</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Subject Options</span>
+                <textarea
+                  rows="4"
+                  placeholder="One subject per line"
+                  [ngModel]="contactContentForm().subjectOptions"
+                  (ngModelChange)="updateContactContentForm('subjectOptions', $event)"
+                ></textarea>
+              </label>
+
+              <div class="setup-card-head faq-head">
+                <span class="stat-label">FAQs</span>
+                <button type="button" class="link-btn" (click)="addFaqEntry()">
+                  <app-icon name="plus" [size]="14" />
+                  Add FAQ
+                </button>
+              </div>
+
+              @for (faq of contactContentForm().faqs; track faq.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Question"
+                      [ngModel]="faq.question"
+                      (ngModelChange)="updateFaqEntry(faq.uid, 'question', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Answer"
+                      [ngModel]="faq.answer"
+                      (ngModelChange)="updateFaqEntry(faq.uid, 'answer', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove FAQ"
+                    (click)="removeFaqEntry(faq.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No FAQ entries yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="contactContentSaving()"
+              (click)="saveContactContent()"
+            >
+              {{ contactContentSaving() ? t('admin.common.saving') : t('admin.content.saveContact') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'history' && canManageHistory()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.historyTitle') }}</h1>
+          <p>{{ t('admin.content.historySubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadHistoryContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (historyContentError()) {
+        <div class="banner error inline">{{ historyContentError() }}</div>
+      }
+      @if (historyContentSuccess()) {
+        <div class="banner info inline">{{ historyContentSuccess() }}</div>
+      }
+
+      @if (historyContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingHistoryContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Page Header</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Page Title *</span>
+                <input
+                  [ngModel]="historyContentForm().pageTitle"
+                  (ngModelChange)="updateHistoryContentForm('pageTitle', $event)"
+                />
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Breadcrumb</span>
+                  <input
+                    [ngModel]="historyContentForm().pageCrumb"
+                    (ngModelChange)="updateHistoryContentForm('pageCrumb', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Subtitle</span>
+                  <input
+                    [ngModel]="historyContentForm().pageSubtitle"
+                    (ngModelChange)="updateHistoryContentForm('pageSubtitle', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Intro</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Intro Title *</span>
+                <input
+                  [ngModel]="historyContentForm().introTitle"
+                  (ngModelChange)="updateHistoryContentForm('introTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Lead Quote</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="historyContentForm().introLead"
+                  (ngModelChange)="updateHistoryContentForm('introLead', $event)"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Paragraphs</span>
+                <textarea
+                  rows="6"
+                  placeholder="One paragraph per line"
+                  [ngModel]="historyContentForm().introParagraphsText"
+                  (ngModelChange)="updateHistoryContentForm('introParagraphsText', $event)"
+                ></textarea>
+              </label>
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Timeline</span>
+                <button type="button" class="link-btn" (click)="addTimelineEntry()">
+                  <app-icon name="plus" [size]="14" />
+                  Add entry
+                </button>
+              </div>
+
+              @for (entry of historyContentForm().timeline; track entry.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Year"
+                      [ngModel]="entry.year"
+                      (ngModelChange)="updateTimelineEntry(entry.uid, 'year', $event)"
+                    />
+                    <input
+                      placeholder="Title"
+                      [ngModel]="entry.title"
+                      (ngModelChange)="updateTimelineEntry(entry.uid, 'title', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Description"
+                      [ngModel]="entry.text"
+                      (ngModelChange)="updateTimelineEntry(entry.uid, 'text', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove entry"
+                    (click)="removeTimelineEntry(entry.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No timeline entries yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Craft Section</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Craft Title *</span>
+                <input
+                  [ngModel]="historyContentForm().craftTitle"
+                  (ngModelChange)="updateHistoryContentForm('craftTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Craft Subtitle</span>
+                <input
+                  [ngModel]="historyContentForm().craftSubtitle"
+                  (ngModelChange)="updateHistoryContentForm('craftSubtitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Values Title *</span>
+                <input
+                  [ngModel]="historyContentForm().valuesTitle"
+                  (ngModelChange)="updateHistoryContentForm('valuesTitle', $event)"
+                />
+              </label>
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Craft Steps</span>
+                <button type="button" class="link-btn" (click)="addCraftStep()">
+                  <app-icon name="plus" [size]="14" />
+                  Add step
+                </button>
+              </div>
+
+              @for (step of historyContentForm().craftSteps; track step.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <select
+                      [ngModel]="step.icon"
+                      (ngModelChange)="updateCraftStep(step.uid, 'icon', $event)"
+                    >
+                      @for (icon of craftIcons; track icon) {
+                        <option [value]="icon">{{ icon }}</option>
+                      }
+                    </select>
+                    <input
+                      placeholder="Title"
+                      [ngModel]="step.title"
+                      (ngModelChange)="updateCraftStep(step.uid, 'title', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Description"
+                      [ngModel]="step.text"
+                      (ngModelChange)="updateCraftStep(step.uid, 'text', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove step"
+                    (click)="removeCraftStep(step.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No craft steps yet.</p>
+              }
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Values</span>
+                <button type="button" class="link-btn" (click)="addValueItem()">
+                  <app-icon name="plus" [size]="14" />
+                  Add value
+                </button>
+              </div>
+
+              @for (item of historyContentForm().values; track item.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Number"
+                      [ngModel]="item.number"
+                      (ngModelChange)="updateValueItem(item.uid, 'number', $event)"
+                    />
+                    <input
+                      placeholder="Title"
+                      [ngModel]="item.title"
+                      (ngModelChange)="updateValueItem(item.uid, 'title', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Description"
+                      [ngModel]="item.text"
+                      (ngModelChange)="updateValueItem(item.uid, 'text', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove value"
+                    (click)="removeValueItem(item.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No values yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="historyContentSaving()"
+              (click)="saveHistoryContent()"
+            >
+              {{ historyContentSaving() ? t('admin.common.saving') : t('admin.content.saveHistory') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'home' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.homeTitle') }}</h1>
+          <p>{{ t('admin.content.homeSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadHomeContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (homeContentError()) {
+        <div class="banner error inline">{{ homeContentError() }}</div>
+      }
+      @if (homeContentSuccess()) {
+        <div class="banner info inline">{{ homeContentSuccess() }}</div>
+      }
+
+      @if (homeContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingHomeContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Hero</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Tagline</span>
+                <input
+                  [ngModel]="homeContentForm().heroTagline"
+                  (ngModelChange)="updateHomeContentForm('heroTagline', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Title Lines *</span>
+                <textarea
+                  rows="3"
+                  placeholder="One title line per line"
+                  [ngModel]="homeContentForm().heroTitleLinesText"
+                  (ngModelChange)="updateHomeContentForm('heroTitleLinesText', $event)"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="field-label">Subtitle</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="homeContentForm().heroSubtitle"
+                  (ngModelChange)="updateHomeContentForm('heroSubtitle', $event)"
+                ></textarea>
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">CTA Label</span>
+                  <input
+                    [ngModel]="homeContentForm().heroCtaLabel"
+                    (ngModelChange)="updateHomeContentForm('heroCtaLabel', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Scroll Label</span>
+                  <input
+                    [ngModel]="homeContentForm().heroScrollLabel"
+                    (ngModelChange)="updateHomeContentForm('heroScrollLabel', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Section Headings</span>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Explore Our World Title *</span>
+                  <input
+                    [ngModel]="homeContentForm().worldTitle"
+                    (ngModelChange)="updateHomeContentForm('worldTitle', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">World Subtitle</span>
+                  <input
+                    [ngModel]="homeContentForm().worldSubtitle"
+                    (ngModelChange)="updateHomeContentForm('worldSubtitle', $event)"
+                  />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Featured Title *</span>
+                  <input
+                    [ngModel]="homeContentForm().featuredTitle"
+                    (ngModelChange)="updateHomeContentForm('featuredTitle', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Featured Subtitle</span>
+                  <input
+                    [ngModel]="homeContentForm().featuredSubtitle"
+                    (ngModelChange)="updateHomeContentForm('featuredSubtitle', $event)"
+                  />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Featured CTA</span>
+                  <input
+                    [ngModel]="homeContentForm().featuredCta"
+                    (ngModelChange)="updateHomeContentForm('featuredCta', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Testimonials Title</span>
+                  <input
+                    [ngModel]="homeContentForm().testimonialsTitle"
+                    (ngModelChange)="updateHomeContentForm('testimonialsTitle', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Instagram Title</span>
+                <input
+                  [ngModel]="homeContentForm().instagramTitle"
+                  (ngModelChange)="updateHomeContentForm('instagramTitle', $event)"
+                />
+              </label>
+            </article>
+          </div>
+
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Featured Piece</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Tag</span>
+                <input
+                  [ngModel]="homeContentForm().featuredPieceTag"
+                  (ngModelChange)="updateHomeContentForm('featuredPieceTag', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Title</span>
+                <input
+                  [ngModel]="homeContentForm().featuredPieceTitle"
+                  (ngModelChange)="updateHomeContentForm('featuredPieceTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Text</span>
+                <textarea
+                  rows="3"
+                  [ngModel]="homeContentForm().featuredPieceText"
+                  (ngModelChange)="updateHomeContentForm('featuredPieceText', $event)"
+                ></textarea>
+              </label>
+
+              <label class="field">
+                <span class="field-label">CTA Label</span>
+                <input
+                  [ngModel]="homeContentForm().featuredPieceCta"
+                  (ngModelChange)="updateHomeContentForm('featuredPieceCta', $event)"
+                />
+              </label>
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">About</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">About Title *</span>
+                <input
+                  [ngModel]="homeContentForm().aboutTitle"
+                  (ngModelChange)="updateHomeContentForm('aboutTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Paragraphs *</span>
+                <textarea
+                  rows="5"
+                  placeholder="One paragraph per line"
+                  [ngModel]="homeContentForm().aboutParagraphsText"
+                  (ngModelChange)="updateHomeContentForm('aboutParagraphsText', $event)"
+                ></textarea>
+              </label>
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">About Stats</span>
+                <button type="button" class="link-btn" (click)="addAboutStat()">
+                  <app-icon name="plus" [size]="14" />
+                  Add stat
+                </button>
+              </div>
+
+              @for (stat of homeContentForm().aboutStats; track stat.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Value"
+                      [ngModel]="stat.value"
+                      (ngModelChange)="updateAboutStat(stat.uid, 'value', $event)"
+                    />
+                    <input
+                      placeholder="Label"
+                      [ngModel]="stat.label"
+                      (ngModelChange)="updateAboutStat(stat.uid, 'label', $event)"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove stat"
+                    (click)="removeAboutStat(stat.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No stats yet.</p>
+              }
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Testimonials</span>
+                <button type="button" class="link-btn" (click)="addTestimonial()">
+                  <app-icon name="plus" [size]="14" />
+                  Add testimonial
+                </button>
+              </div>
+
+              @for (item of homeContentForm().testimonials; track item.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Author"
+                      [ngModel]="item.author"
+                      (ngModelChange)="updateTestimonial(item.uid, 'author', $event)"
+                    />
+                    <input
+                      placeholder="Location"
+                      [ngModel]="item.location"
+                      (ngModelChange)="updateTestimonial(item.uid, 'location', $event)"
+                    />
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      placeholder="Rating"
+                      [ngModel]="item.rating"
+                      (ngModelChange)="updateTestimonial(item.uid, 'rating', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Quote"
+                      [ngModel]="item.text"
+                      (ngModelChange)="updateTestimonial(item.uid, 'text', $event)"
+                    ></textarea>
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove testimonial"
+                    (click)="removeTestimonial(item.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No testimonials yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="setup-grid">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Category Tiles</span>
+              </div>
+              <p class="muted">Tiles map to storefront categories; edit the displayed title and count below.</p>
+
+              @for (tile of homeContentForm().categoryTiles; track tile.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Title"
+                      [ngModel]="tile.title"
+                      (ngModelChange)="updateCategoryTile(tile.uid, 'title', $event)"
+                    />
+                    <input
+                      placeholder="Count"
+                      [ngModel]="tile.count"
+                      (ngModelChange)="updateCategoryTile(tile.uid, 'count', $event)"
+                    />
+                  </div>
+                </div>
+              } @empty {
+                <p class="muted">No category tiles found.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="homeContentSaving()"
+              (click)="saveHomeContent()"
+            >
+              {{ homeContentSaving() ? t('admin.common.saving') : t('admin.content.saveHome') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'collections' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.collectionsTitle') }}</h1>
+          <p>{{ t('admin.content.collectionsSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadCollectionsContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (collectionsContentError()) {
+        <div class="banner error inline">{{ collectionsContentError() }}</div>
+      }
+      @if (collectionsContentSuccess()) {
+        <div class="banner info inline">{{ collectionsContentSuccess() }}</div>
+      }
+
+      @if (collectionsContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingCollectionsContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Page Header</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Page Title *</span>
+                <input
+                  [ngModel]="collectionsContentForm().pageTitle"
+                  (ngModelChange)="updateCollectionsContentForm('pageTitle', $event)"
+                />
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Breadcrumb</span>
+                  <input
+                    [ngModel]="collectionsContentForm().pageCrumb"
+                    (ngModelChange)="updateCollectionsContentForm('pageCrumb', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Subtitle</span>
+                  <input
+                    [ngModel]="collectionsContentForm().pageSubtitle"
+                    (ngModelChange)="updateCollectionsContentForm('pageSubtitle', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+          </div>
+
+          <div class="setup-grid">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Collections</span>
+              </div>
+
+              @for (block of collectionsContentForm().collections; track block.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Tag"
+                      [ngModel]="block.tag"
+                      (ngModelChange)="updateCollectionBlock(block.uid, 'tag', $event)"
+                    />
+                    <input
+                      placeholder="Title"
+                      [ngModel]="block.title"
+                      (ngModelChange)="updateCollectionBlock(block.uid, 'title', $event)"
+                    />
+                    <textarea
+                      rows="2"
+                      placeholder="Description"
+                      [ngModel]="block.text"
+                      (ngModelChange)="updateCollectionBlock(block.uid, 'text', $event)"
+                    ></textarea>
+                    <input
+                      placeholder="Link Label"
+                      [ngModel]="block.linkLabel"
+                      (ngModelChange)="updateCollectionBlock(block.uid, 'linkLabel', $event)"
+                    />
+                  </div>
+                </div>
+              } @empty {
+                <p class="muted">No collections found.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="collectionsContentSaving()"
+              (click)="saveCollectionsContent()"
+            >
+              {{ collectionsContentSaving() ? t('admin.common.saving') : t('admin.content.saveCollections') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'reviews' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.reviewsTitle') }}</h1>
+          <p>{{ t('admin.content.reviewsSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadReviewsContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (reviewsContentError()) {
+        <div class="banner error inline">{{ reviewsContentError() }}</div>
+      }
+      @if (reviewsContentSuccess()) {
+        <div class="banner info inline">{{ reviewsContentSuccess() }}</div>
+      }
+
+      @if (reviewsContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingReviewsContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Page Header</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Page Title *</span>
+                <input
+                  [ngModel]="reviewsContentForm().pageTitle"
+                  (ngModelChange)="updateReviewsContentForm('pageTitle', $event)"
+                />
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Breadcrumb</span>
+                  <input
+                    [ngModel]="reviewsContentForm().pageCrumb"
+                    (ngModelChange)="updateReviewsContentForm('pageCrumb', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Subtitle</span>
+                  <input
+                    [ngModel]="reviewsContentForm().pageSubtitle"
+                    (ngModelChange)="updateReviewsContentForm('pageSubtitle', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Write Review</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Write Title</span>
+                <input
+                  [ngModel]="reviewsContentForm().writeTitle"
+                  (ngModelChange)="updateReviewsContentForm('writeTitle', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Write Text</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="reviewsContentForm().writeText"
+                  (ngModelChange)="updateReviewsContentForm('writeText', $event)"
+                ></textarea>
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Write Button</span>
+                  <input
+                    [ngModel]="reviewsContentForm().writeButton"
+                    (ngModelChange)="updateReviewsContentForm('writeButton', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Empty Text</span>
+                  <input
+                    [ngModel]="reviewsContentForm().emptyText"
+                    (ngModelChange)="updateReviewsContentForm('emptyText', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Filters</span>
+              </div>
+
+              @for (filter of reviewsContentForm().filters; track filter.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input placeholder="Value" [ngModel]="filter.value" readonly />
+                    <input
+                      placeholder="Label"
+                      [ngModel]="filter.label"
+                      (ngModelChange)="updateReviewFilter(filter.uid, $event)"
+                    />
+                  </div>
+                </div>
+              } @empty {
+                <p class="muted">No filters found.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="reviewsContentSaving()"
+              (click)="saveReviewsContent()"
+            >
+              {{ reviewsContentSaving() ? t('admin.common.saving') : t('admin.content.saveReviews') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'header' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.headerTitle') }}</h1>
+          <p>{{ t('admin.content.headerSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadHeaderContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      <div class="banner info inline">
+        {{ t('admin.header.globalNotice') }}
+      </div>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (headerContentError()) {
+        <div class="banner error inline">{{ headerContentError() }}</div>
+      }
+      @if (headerContentSuccess()) {
+        <div class="banner info inline">{{ headerContentSuccess() }}</div>
+      }
+
+      @if (headerContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingHeaderContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">{{ t('admin.header.brandTitle') }}</span>
+              </div>
+
+              <div class="header-logo-panel">
+                <div class="header-logo-preview">
+                  @if (headerContentForm().logoImageUrl) {
+                    <div class="header-logo-preview-brand">
+                      <img [src]="headerContentForm().logoImageUrl" [alt]="headerContentForm().brandShortName || 'Logo'" />
+                      @if (headerContentForm().showLogoTextWithImage) {
+                        <div class="header-logo-fallback">
+                          {{ headerContentForm().brandShortName || t('admin.header.logoFallbackPrimary') }}
+                          <span>{{ headerContentForm().brandSuffix || t('admin.header.logoFallbackSecondary') }}</span>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <div class="header-logo-fallback">
+                      {{ headerContentForm().brandShortName || t('admin.header.logoFallbackPrimary') }}
+                      <span>{{ headerContentForm().brandSuffix || t('admin.header.logoFallbackSecondary') }}</span>
+                    </div>
+                  }
+                </div>
+
+                <div class="header-logo-actions">
+                  <label class="ghost-btn file-trigger">
+                    <input type="file" accept="image/*" (change)="onHeaderLogoSelected($event)" />
+                    {{ headerLogoUploading() ? t('admin.header.uploadingLogo') : t('admin.header.uploadLogo') }}
+                  </label>
+                  <button
+                    type="button"
+                    class="ghost-btn"
+                    [disabled]="!headerContentForm().logoImageUrl"
+                    (click)="removeHeaderLogo()"
+                  >
+                    {{ t('admin.header.removeLogo') }}
+                  </button>
+                </div>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.showTextWithLogo') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showLogoTextWithImage"
+                    (ngModelChange)="updateHeaderContentForm('showLogoTextWithImage', $event)"
+                  />
+                </label>
+              </div>
+
+              @if (headerLogoNotice()) {
+                <p class="muted">{{ headerLogoNotice() }}</p>
+              }
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">{{ t('admin.header.shortName') }}</span>
+                  <input
+                    [ngModel]="headerContentForm().brandShortName"
+                    (ngModelChange)="updateHeaderContentForm('brandShortName', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">{{ t('admin.header.suffix') }}</span>
+                  <input
+                    [ngModel]="headerContentForm().brandSuffix"
+                    (ngModelChange)="updateHeaderContentForm('brandSuffix', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">{{ t('admin.header.announcement') }}</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="headerContentForm().announcement"
+                  (ngModelChange)="updateHeaderContentForm('announcement', $event)"
+                ></textarea>
+              </label>
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">{{ t('admin.header.navTitle') }}</span>
+              </div>
+
+              <div class="toggle-list">
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.home') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showHome"
+                    (ngModelChange)="updateHeaderContentForm('showHome', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.shop') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showShop"
+                    (ngModelChange)="updateHeaderContentForm('showShop', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.collections') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showCollections"
+                    (ngModelChange)="updateHeaderContentForm('showCollections', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.history') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showHistory"
+                    (ngModelChange)="updateHeaderContentForm('showHistory', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.contact') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showContact"
+                    (ngModelChange)="updateHeaderContentForm('showContact', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">{{ t('admin.header.controlsTitle') }}</span>
+              </div>
+
+              <div class="toggle-list">
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.language') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showLanguage"
+                    (ngModelChange)="updateHeaderContentForm('showLanguage', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.currency') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showCurrency"
+                    (ngModelChange)="updateHeaderContentForm('showCurrency', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.search') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showSearch"
+                    (ngModelChange)="updateHeaderContentForm('showSearch', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.cart') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showCart"
+                    (ngModelChange)="updateHeaderContentForm('showCart', $event)"
+                  />
+                </label>
+
+                <label class="toggle-row">
+                  <span>{{ t('admin.header.account') }}</span>
+                  <input
+                    type="checkbox"
+                    [ngModel]="headerContentForm().showAccount"
+                    (ngModelChange)="updateHeaderContentForm('showAccount', $event)"
+                  />
+                </label>
+              </div>
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="headerContentSaving()"
+              (click)="saveHeaderContent()"
+            >
+              {{ headerContentSaving() ? t('admin.common.saving') : t('admin.content.saveHeader') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'shop' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.shopTitle') }}</h1>
+          <p>{{ t('admin.content.shopSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <button type="button" class="ghost-btn" (click)="loadShopContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      <div class="banner info inline">
+        {{ t('admin.shop.globalNotice') }}
+      </div>
+
+      @if (shopContentError()) {
+        <div class="banner error inline">{{ shopContentError() }}</div>
+      }
+      @if (shopContentSuccess()) {
+        <div class="banner info inline">{{ shopContentSuccess() }}</div>
+      }
+
+      @if (shopContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingShopContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            @for (currency of shopContentForm().currencies; track currency.code) {
+              <article class="setup-card">
+                <div class="setup-card-head shop-card-head">
+                  <div>
+                    <span class="stat-label">{{ currency.code }}</span>
+                    <strong>{{ currency.label }}</strong>
+                  </div>
+                  <button type="button" class="ghost-btn" (click)="addShopRange(currency.code)">
+                    {{ t('admin.shop.addRange') }}
+                  </button>
+                </div>
+
+                @for (range of currency.ranges; track range.uid) {
+                  <div class="contact-editor-row shop-range-row">
+                    <div class="contact-editor-fields">
+                      <p class="shop-range-preview">{{ formatShopRangePreview(currency, range) }}</p>
+                      <div class="field-row">
+                        <label class="field">
+                          <span class="field-label">{{ t('admin.shop.min') }}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            [ngModel]="range.min ?? ''"
+                            (ngModelChange)="updateShopRange(currency.code, range.uid, 'min', $event)"
+                          />
+                        </label>
+                        <label class="field">
+                          <span class="field-label">{{ t('admin.shop.max') }}</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            [ngModel]="range.max ?? ''"
+                            (ngModelChange)="updateShopRange(currency.code, range.uid, 'max', $event)"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="icon-btn danger"
+                      [title]="t('admin.shop.removeRange')"
+                      (click)="removeShopRange(currency.code, range.uid)"
+                    >
+                      <app-icon name="minus" [size]="16" />
+                    </button>
+                  </div>
+                } @empty {
+                  <p class="muted">{{ t('admin.shop.currencyEmpty') }}</p>
+                }
+              </article>
+            }
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="shopContentSaving()"
+              (click)="saveShopContent()"
+            >
+              {{ shopContentSaving() ? t('admin.common.saving') : t('admin.content.saveShop') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+
+    @if (activeTab() === 'footer' && canManageSiteContent()) {
+      <header class="admin-head">
+        <div class="admin-heading">
+          <h1>{{ t('admin.content.footerTitle') }}</h1>
+          <p>{{ t('admin.content.footerSubtitle') }}</p>
+        </div>
+        <div class="head-controls">
+          <div class="lang-pills">
+            @for (language of contentLanguages; track language.code) {
+              <button
+                type="button"
+                class="lang-pill"
+                [class.active]="contentLanguage() === language.code"
+                (click)="setContentLanguage(language.code)"
+              >
+                <app-icon [name]="language.flagIcon" [size]="16" />
+                {{ language.label }}
+              </button>
+            }
+          </div>
+          <button type="button" class="ghost-btn" (click)="loadFooterContent()">{{ t('admin.common.refresh') }}</button>
+        </div>
+      </header>
+
+      @if (contentLanguage() !== 'en') {
+        <div class="banner info inline">
+          {{ t('admin.content.languageNotice', { lang: contentLanguage().toUpperCase() }) }}
+        </div>
+      }
+
+      @if (footerContentError()) {
+        <div class="banner error inline">{{ footerContentError() }}</div>
+      }
+      @if (footerContentSuccess()) {
+        <div class="banner info inline">{{ footerContentSuccess() }}</div>
+      }
+
+      @if (footerContentLoading()) {
+        <div class="state">{{ t('admin.common.loadingFooterContent') }}</div>
+      } @else {
+        <section class="catalog-setup">
+          <div class="setup-grid">
+            <article class="setup-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Brand</span>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Brand Name *</span>
+                <input
+                  [ngModel]="footerContentForm().brandName"
+                  (ngModelChange)="updateFooterContentForm('brandName', $event)"
+                />
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Short Name</span>
+                  <input
+                    [ngModel]="footerContentForm().brandShortName"
+                    (ngModelChange)="updateFooterContentForm('brandShortName', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Suffix</span>
+                  <input
+                    [ngModel]="footerContentForm().brandSuffix"
+                    (ngModelChange)="updateFooterContentForm('brandSuffix', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Announcement</span>
+                <input
+                  [ngModel]="footerContentForm().announcement"
+                  (ngModelChange)="updateFooterContentForm('announcement', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Footer Tagline</span>
+                <textarea
+                  rows="2"
+                  [ngModel]="footerContentForm().footerTagline"
+                  (ngModelChange)="updateFooterContentForm('footerTagline', $event)"
+                ></textarea>
+              </label>
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Top Navigation</span>
+                <button type="button" class="link-btn" (click)="addNavLink()">
+                  <app-icon name="plus" [size]="14" />
+                  Add link
+                </button>
+              </div>
+
+              @for (link of footerContentForm().navLinks; track link.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Label"
+                      [ngModel]="link.label"
+                      (ngModelChange)="updateNavLink(link.uid, 'label', $event)"
+                    />
+                    <input
+                      placeholder="Route (e.g. /shop)"
+                      [ngModel]="link.route"
+                      (ngModelChange)="updateNavLink(link.uid, 'route', $event)"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove link"
+                    (click)="removeNavLink(link.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No navigation links yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="setup-grid contact-lists">
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Footer Columns</span>
+                <button type="button" class="link-btn" (click)="addFooterColumn()">
+                  <app-icon name="plus" [size]="14" />
+                  Add column
+                </button>
+              </div>
+
+              @for (column of footerContentForm().footerColumns; track column.uid) {
+                <div class="footer-column-editor">
+                  <div class="contact-editor-row">
+                    <div class="contact-editor-fields">
+                      <input
+                        placeholder="Column title"
+                        [ngModel]="column.title"
+                        (ngModelChange)="updateFooterColumnTitle(column.uid, $event)"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      class="icon-btn danger"
+                      title="Remove column"
+                      (click)="removeFooterColumn(column.uid)"
+                    >
+                      <app-icon name="minus" [size]="16" />
+                    </button>
+                  </div>
+
+                  @for (link of column.links; track link.uid) {
+                    <div class="contact-editor-row">
+                      <div class="contact-editor-fields">
+                        <input
+                          placeholder="Label"
+                          [ngModel]="link.label"
+                          (ngModelChange)="updateFooterColumnLink(column.uid, link.uid, 'label', $event)"
+                        />
+                        <input
+                          placeholder="Route"
+                          [ngModel]="link.route"
+                          (ngModelChange)="updateFooterColumnLink(column.uid, link.uid, 'route', $event)"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        class="icon-btn danger"
+                        title="Remove link"
+                        (click)="removeFooterColumnLink(column.uid, link.uid)"
+                      >
+                        <app-icon name="minus" [size]="16" />
+                      </button>
+                    </div>
+                  }
+
+                  <button type="button" class="link-btn" (click)="addFooterColumnLink(column.uid)">
+                    <app-icon name="plus" [size]="14" />
+                    Add link
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No footer columns yet.</p>
+              }
+            </article>
+
+            <article class="setup-card history-timeline-card">
+              <div class="setup-card-head">
+                <span class="stat-label">Social Links</span>
+                <button type="button" class="link-btn" (click)="addSocialLink()">
+                  <app-icon name="plus" [size]="14" />
+                  Add social
+                </button>
+              </div>
+
+              @for (link of footerContentForm().socialLinks; track link.uid) {
+                <div class="contact-editor-row">
+                  <div class="contact-editor-fields">
+                    <input
+                      placeholder="Label (e.g. ig)"
+                      [ngModel]="link.label"
+                      (ngModelChange)="updateSocialLink(link.uid, 'label', $event)"
+                    />
+                    <input
+                      placeholder="Title"
+                      [ngModel]="link.title"
+                      (ngModelChange)="updateSocialLink(link.uid, 'title', $event)"
+                    />
+                    <input
+                      placeholder="URL"
+                      [ngModel]="link.href"
+                      (ngModelChange)="updateSocialLink(link.uid, 'href', $event)"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="icon-btn danger"
+                    title="Remove social link"
+                    (click)="removeSocialLink(link.uid)"
+                  >
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No social links yet.</p>
+              }
+            </article>
+          </div>
+
+          <div class="contact-save-bar">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="footerContentSaving()"
+              (click)="saveFooterContent()"
+            >
+              {{ footerContentSaving() ? t('admin.common.saving') : t('admin.content.saveFooter') }}
+            </button>
+          </div>
+        </section>
+      }
+    }
+  </section>
+
+  @if (modalOpen() && canManageProducts()) {
+    <div class="overlay" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <header class="modal-head">
+          <h2>{{ editingId() === null ? 'New Product' : 'Edit Product' }}</h2>
+          <button type="button" class="icon-btn" title="Close" (click)="closeModal()">
+            <app-icon name="close" [size]="18" />
+          </button>
+        </header>
+
+        <div class="modal-body">
+          @if (formError()) {
+            <div class="banner error inline">{{ formError() }}</div>
+          }
+          @if (uploadNotice()) {
+            <div class="banner info inline">{{ uploadNotice() }}</div>
+          }
+
+          <div class="modal-grid">
+            <div class="form-col">
+              <label class="field">
+                <span class="field-label">Name *</span>
+                <input
+                  type="text"
+                  placeholder="e.g. Verona Tote"
+                  [ngModel]="form().name"
+                  (ngModelChange)="update('name', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Slug</span>
+                <input
+                  type="text"
+                  placeholder="verona-tote"
+                  [ngModel]="form().slug"
+                  (ngModelChange)="update('slug', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Category</span>
+                <select [ngModel]="form().category" (ngModelChange)="update('category', $event)">
+                  @for (category of categories; track category) {
+                    <option [value]="category">{{ category }}</option>
+                  }
+                </select>
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Price *</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0"
+                    [ngModel]="form().price"
+                    (ngModelChange)="update('price', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Original Price</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="Optional"
+                    [ngModel]="form().originalPrice"
+                    (ngModelChange)="update('originalPrice', $event)"
+                  />
+                </label>
+              </div>
+
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Badge</span>
+                  <input
+                    type="text"
+                    placeholder="e.g. New"
+                    [ngModel]="form().badge"
+                    (ngModelChange)="update('badge', $event)"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Date</span>
+                  <input
+                    type="date"
+                    [ngModel]="form().date"
+                    (ngModelChange)="update('date', $event)"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Image URL *</span>
+                <input
+                  type="text"
+                  placeholder="https://…"
+                  [ngModel]="form().image"
+                  (ngModelChange)="update('image', $event)"
+                />
+              </label>
+
+              <div class="field">
+                <div class="row-actions">
+                  <label class="upload-btn">
+                    <app-icon name="upload" [size]="16" />
+                    {{ uploading() ? 'Uploading…' : 'Upload image' }}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      [disabled]="uploading()"
+                      (change)="onFileSelected($event)"
+                    />
+                  </label>
+                  <button type="button" class="ghost-btn" (click)="generateImage()">
+                    Generate image
+                  </button>
+                </div>
+                <span class="hint">
+                  Upload uses Cloudflare R2. If storage is not configured, paste an image URL or use
+                  Generate image.
+                </span>
+              </div>
+
+              <div class="gallery-editor">
+                <div class="variants-head">
+                  <span class="field-label">Gallery Images</span>
+                  <button type="button" class="link-btn" (click)="addGalleryImage()">
+                    <app-icon name="plus" [size]="14" />
+                    Add image
+                  </button>
+                </div>
+
+                <div class="row-actions gallery-actions">
+                  <label class="upload-btn">
+                    <app-icon name="upload" [size]="16" />
+                    {{ uploading() ? 'Uploading…' : 'Upload gallery images' }}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      hidden
+                      [disabled]="uploading()"
+                      (change)="onGalleryFileSelected($event)"
+                    />
+                  </label>
+                  <button type="button" class="ghost-btn" (click)="generateGalleryImage()">
+                    Generate gallery image
+                  </button>
+                </div>
+
+                <span class="hint">
+                  Add extra views for the quick view gallery. The main Image URL stays separate and is
+                  used as the primary storefront image.
+                </span>
+
+                @for (image of form().gallery; track $index) {
+                  <div class="gallery-row">
+                    <input
+                      type="text"
+                      placeholder="https://…"
+                      [ngModel]="image"
+                      (ngModelChange)="updateGalleryImage($index, $event)"
+                    />
+                    <button
+                      type="button"
+                      class="icon-btn danger"
+                      title="Remove gallery image"
+                      (click)="removeGalleryImage($index)"
+                    >
+                      <app-icon name="minus" [size]="16" />
+                    </button>
+                  </div>
+                } @empty {
+                  <p class="muted">No gallery images yet. Add close-ups or alternate angles here.</p>
+                }
+              </div>
+
+              <label class="field">
+                <span class="field-label">Image Style Class</span>
+                <input
+                  type="text"
+                  placeholder="e.g. prod-img-1"
+                  [ngModel]="form().imageClass"
+                  (ngModelChange)="update('imageClass', $event)"
+                />
+              </label>
+
+              <label class="field">
+                <span class="field-label">Description *</span>
+                <textarea
+                  rows="4"
+                  placeholder="Describe the piece, its leather and finish…"
+                  [ngModel]="form().description"
+                  (ngModelChange)="update('description', $event)"
+                ></textarea>
+              </label>
+
+              <div class="check-row">
+                <label class="check">
+                  <input
+                    type="checkbox"
+                    [ngModel]="form().inStock"
+                    (ngModelChange)="update('inStock', $event)"
+                  />
+                  <span>In stock</span>
+                </label>
+                <label class="check">
+                  <input
+                    type="checkbox"
+                    [ngModel]="form().featured"
+                    (ngModelChange)="update('featured', $event)"
+                  />
+                  <span>Featured</span>
+                </label>
+              </div>
+
+              <div class="variants">
+                <div class="variants-head">
+                  <span class="field-label">Variants</span>
+                  <button type="button" class="link-btn" (click)="addVariant()">
+                    <app-icon name="plus" [size]="14" />
+                    Add variant
+                  </button>
+                </div>
+
+                @for (variant of form().variants; track variant.uid) {
+                  <div class="variant-row">
+                    <input
+                      type="text"
+                      placeholder="SKU"
+                      [ngModel]="variant.sku"
+                      (ngModelChange)="updateVariant($index, 'sku', $event)"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      [ngModel]="variant.name"
+                      (ngModelChange)="updateVariant($index, 'name', $event)"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Price delta"
+                      [ngModel]="variant.priceDelta"
+                      (ngModelChange)="updateVariant($index, 'priceDelta', $event)"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      [ngModel]="variant.stock"
+                      (ngModelChange)="updateVariant($index, 'stock', $event)"
+                    />
+                    <button
+                      type="button"
+                      class="icon-btn danger"
+                      title="Remove variant"
+                      (click)="removeVariant($index)"
+                    >
+                      <app-icon name="minus" [size]="16" />
+                    </button>
+                  </div>
+                } @empty {
+                  <p class="muted">No variants yet. Add one for different sizes or colours.</p>
+                }
+              </div>
+            </div>
+
+            <aside class="preview-col">
+              <div class="preview-card">
+                <span class="preview-tag">Live Preview</span>
+                <div class="preview-media">
+                  <div class="media-fill" [class]="form().imageClass || 'prod-img-1'">
+                    @if (form().image) {
+                      <img [src]="form().image" alt="" />
+                    }
+                  </div>
+                  @if (form().badge) {
+                    <span class="preview-badge">{{ form().badge }}</span>
+                  }
+                </div>
+                @if (previewGallery().length > 1) {
+                  <div class="preview-gallery">
+                    @for (image of previewGallery(); track image) {
+                      <div class="preview-thumb">
+                        <img [src]="image" alt="" />
+                      </div>
+                    }
+                  </div>
+                }
+                <div class="preview-body">
+                  <span class="preview-cat">{{ form().category }}</span>
+                  <h3 class="preview-name">{{ form().name || 'Untitled piece' }}</h3>
+                  <p class="preview-price">
+                    <span>{{ previewPrice() }}</span>
+                    @if (previewOriginal(); as originalPrice) {
+                      <span class="strike">{{ price(originalPrice) }}</span>
+                    }
+                  </p>
+                  <span class="pill" [class.on]="form().inStock" [class.off]="!form().inStock">
+                    {{ form().inStock ? 'In Stock' : 'Sold Out' }}
+                  </span>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <footer class="modal-foot">
+          <button type="button" class="ghost-btn" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn-primary" [disabled]="saving()" (click)="submit()">
+            {{ saving() ? 'Saving…' : editingId() === null ? 'Create Product' : 'Save Changes' }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+
+  @if (orderModalOpen() && orderForm(); as form) {
+    <div class="overlay" (click)="closeOrderModal()">
+      <div class="modal compact-modal" (click)="$event.stopPropagation()">
+        <header class="modal-head">
+          <h2>Manage Order</h2>
+          <button type="button" class="icon-btn" title="Close" (click)="closeOrderModal()">
+            <app-icon name="close" [size]="18" />
+          </button>
+        </header>
+
+        <div class="modal-body">
+          @if (selectedOrder(); as order) {
+            <div class="details-grid">
+              <div class="detail-card">
+                <span class="field-label">Order Number</span>
+                <strong>{{ order.orderNumber }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">Customer</span>
+                <strong>{{ order.customerEmail }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">Created</span>
+                <strong>{{ formatDate(order.createdAt) }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">Total</span>
+                <strong>{{ formatMoney(order.total, order.currency) }}</strong>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Order Status</span>
+                <select [ngModel]="form.status" (ngModelChange)="updateOrderField('status', $event)">
+                  @for (status of orderStatuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                  }
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">Payment Status</span>
+                <select [ngModel]="form.paymentStatus" (ngModelChange)="updateOrderField('paymentStatus', $event)">
+                  @for (status of paymentStatuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="order-lines">
+              @for (item of order.items; track item.productId + '-' + item.variantSku) {
+                <div class="order-line">
+                  <div>
+                    <strong>{{ item.productName }}</strong>
+                    <p>
+                      Qty {{ item.quantity }}
+                      @if (item.variantSku) {
+                        · {{ item.variantSku }}
+                      }
+                    </p>
+                  </div>
+                  <span>{{ formatMoney(item.lineTotal, order.currency) }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <footer class="modal-foot">
+          <button type="button" class="ghost-btn" (click)="closeOrderModal()">Cancel</button>
+          <button type="button" class="btn-primary" [disabled]="savingOrder()" (click)="saveOrder()">
+            {{ savingOrder() ? 'Saving…' : 'Save Order' }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+
+  @if (customOrderModalOpen() && customOrderForm(); as form) {
+    <div class="overlay" (click)="closeCustomOrderModal()">
+      <div class="modal compact-modal" (click)="$event.stopPropagation()">
+        <header class="modal-head">
+          <h2>{{ t('admin.customOrders.manageTitle') }}</h2>
+          <button type="button" class="icon-btn" title="Close" (click)="closeCustomOrderModal()">
+            <app-icon name="close" [size]="18" />
+          </button>
+        </header>
+
+        <div class="modal-body">
+          @if (selectedCustomOrder(); as request) {
+            <div class="details-grid">
+              <div class="detail-card">
+                <span class="field-label">{{ t('admin.customOrders.request') }}</span>
+                <strong>{{ request.requestNumber }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">{{ t('admin.orders.customer') }}</span>
+                <strong>{{ request.customerName }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">{{ t('admin.customOrders.product') }}</span>
+                <strong>{{ request.productName || t('admin.customOrders.designFallback') }}</strong>
+              </div>
+              <div class="detail-card">
+                <span class="field-label">{{ t('admin.orders.created') }}</span>
+                <strong>{{ formatDate(request.createdAt) }}</strong>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">{{ t('admin.common.status') }}</span>
+                <select [ngModel]="form.status" (ngModelChange)="updateCustomOrderField('status', $event)">
+                  @for (status of customOrderStatuses; track status) {
+                    <option [value]="status">{{ customOrderStatusLabel(status) }}</option>
+                  }
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">{{ t('admin.customOrders.type') }}</span>
+                <input [value]="customOrderTypeLabel(request.type)" disabled />
+              </label>
+            </div>
+
+            <div class="order-lines">
+              <div class="order-line">
+                <div>
+                  <strong>{{ t('admin.customOrders.requestTitle') }}</strong>
+                  <p>{{ request.title }}</p>
+                </div>
+                <span>{{ t('admin.customOrders.quantity') }}: {{ request.quantity }}</span>
+              </div>
+              <div class="order-line">
+                <div>
+                  <strong>{{ t('admin.customOrders.preferences') }}</strong>
+                  <p>
+                    {{ request.preferredMaterial || '—' }} · {{ request.preferredColor || '—' }}
+                    @if (request.sizeDetails) {
+                      · {{ request.sizeDetails }}
+                    }
+                  </p>
+                </div>
+                @if (request.budget !== null && request.budgetCurrency) {
+                  <span>{{ formatMoney(request.budget, request.budgetCurrency) }}</span>
+                }
+              </div>
+            </div>
+
+            <label class="field">
+              <span class="field-label">{{ t('admin.customOrders.customerNotes') }}</span>
+              <textarea rows="5" [value]="request.notes" disabled></textarea>
+            </label>
+
+            <label class="field">
+              <span class="field-label">{{ t('admin.customOrders.adminNotes') }}</span>
+              <textarea
+                rows="5"
+                [ngModel]="form.adminNotes"
+                (ngModelChange)="updateCustomOrderField('adminNotes', $event)"
+              ></textarea>
+            </label>
+          }
+        </div>
+
+        <footer class="modal-foot">
+          <button type="button" class="ghost-btn" (click)="closeCustomOrderModal()">Cancel</button>
+          <button type="button" class="btn-primary" [disabled]="savingCustomOrder()" (click)="saveCustomOrder()">
+            {{ savingCustomOrder() ? 'Saving…' : t('admin.customOrders.save') }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+
+  @if (userModalOpen()) {
+    <div class="overlay" (click)="closeUserModal()">
+      <div class="modal compact-modal" (click)="$event.stopPropagation()">
+        <header class="modal-head">
+          <h2>{{ userForm().id === null ? 'New Staff User' : 'Edit Staff User' }}</h2>
+          <button type="button" class="icon-btn" title="Close" (click)="closeUserModal()">
+            <app-icon name="close" [size]="18" />
+          </button>
+        </header>
+
+        <div class="modal-body">
+          @if (userFormError()) {
+            <div class="banner error inline">{{ userFormError() }}</div>
+          }
+
+          <div class="form-col">
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">First Name *</span>
+                <input [ngModel]="userForm().firstName" (ngModelChange)="updateUserField('firstName', $event)" />
+              </label>
+              <label class="field">
+                <span class="field-label">Last Name</span>
+                <input [ngModel]="userForm().lastName" (ngModelChange)="updateUserField('lastName', $event)" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Email *</span>
+              <input
+                type="email"
+                [disabled]="userForm().id !== null"
+                [ngModel]="userForm().email"
+                (ngModelChange)="updateUserField('email', $event)"
+              />
+            </label>
+
+            @if (userForm().id === null) {
+              <label class="field">
+                <span class="field-label">Password *</span>
+                <input
+                  type="password"
+                  [ngModel]="userForm().password"
+                  (ngModelChange)="updateUserField('password', $event)"
+                />
+              </label>
+            }
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Role</span>
+                <select [ngModel]="userForm().role" (ngModelChange)="updateUserField('role', $event)">
+                  @for (role of staffRoles; track role) {
+                    <option [value]="role">{{ role }}</option>
+                  }
+                </select>
+              </label>
+
+              <label class="check stacked-check">
+                <input
+                  type="checkbox"
+                  [ngModel]="userForm().enabled"
+                  (ngModelChange)="updateUserField('enabled', $event)"
+                />
+                <span>Enabled</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <footer class="modal-foot">
+          <button type="button" class="ghost-btn" (click)="closeUserModal()">Cancel</button>
+          <button type="button" class="btn-primary" [disabled]="savingUser()" (click)="saveUser()">
+            {{ savingUser() ? 'Saving…' : userForm().id === null ? 'Create User' : 'Save User' }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+
+  @if (deleteTarget(); as target) {
+    <div class="overlay" (click)="cancelDelete()">
+      <div class="confirm-card" (click)="$event.stopPropagation()">
+        <h3>Delete this product?</h3>
+        <p>
+          "{{ target.name }}" will be permanently removed from the catalogue. This cannot be undone.
+        </p>
+        <div class="confirm-actions">
+          <button type="button" class="ghost-btn" (click)="cancelDelete()">Cancel</button>
+          <button
+            type="button"
+            class="danger-btn"
+            [disabled]="deleting()"
+            (click)="confirmDelete()"
+          >
+            {{ deleting() ? 'Deleting…' : 'Delete Product' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (userDeleteTarget(); as user) {
+    <div class="overlay" (click)="cancelUserDelete()">
+      <div class="confirm-card" (click)="$event.stopPropagation()">
+        <h3>Delete this user?</h3>
+        <p>
+          "{{ user.firstName }} {{ user.lastName || '' }}" will lose access immediately and the
+          account will be removed. The Root administrator account is protected and cannot be
+          deleted.
+        </p>
+        <div class="confirm-actions">
+          <button type="button" class="ghost-btn" (click)="cancelUserDelete()">Cancel</button>
+          <button
+            type="button"
+            class="danger-btn"
+            [disabled]="deletingUser()"
+            (click)="confirmUserDelete()"
+          >
+            {{ deletingUser() ? 'Deleting…' : 'Delete User' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

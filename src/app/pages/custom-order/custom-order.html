@@ -1,0 +1,196 @@
+<div class="page">
+  <app-page-header
+    [title]="locale.t('customOrder.title')"
+    [crumb]="locale.t('customOrder.crumb')"
+    [subtitle]="locale.t('customOrder.subtitle')"
+  />
+
+  <section class="section custom-order-page">
+    <div class="intro-grid">
+      <div class="intro-card">
+        <span class="eyebrow">{{ locale.t('customOrder.customer') }}</span>
+        <strong>{{ auth.user()?.firstName }} {{ auth.user()?.lastName }}</strong>
+        <p>{{ auth.user()?.email }}</p>
+      </div>
+      <div class="intro-card">
+        <span class="eyebrow">{{ locale.t('customOrder.howItWorks') }}</span>
+        <p>{{ locale.t('customOrder.howItWorksText') }}</p>
+      </div>
+    </div>
+
+    <div class="mode-switch">
+      <button
+        type="button"
+        class="mode-btn"
+        [class.active]="mode() === 'PRODUCT'"
+        (click)="selectMode('PRODUCT')"
+      >
+        {{ locale.t('customOrder.modeProduct') }}
+      </button>
+      <button
+        type="button"
+        class="mode-btn"
+        [class.active]="mode() === 'DESIGN'"
+        (click)="selectMode('DESIGN')"
+      >
+        {{ locale.t('customOrder.modeDesign') }}
+      </button>
+    </div>
+
+    @if (mode() === 'PRODUCT') {
+      <section class="picker-card">
+        <div class="section-head">
+          <div>
+            <h2>{{ locale.t('customOrder.selectProduct') }}</h2>
+            <p>{{ locale.t('customOrder.selectProductText') }}</p>
+          </div>
+        </div>
+
+        @if (customProducts().length > 0) {
+          <div class="product-picker-grid">
+            @for (product of customProducts(); track product.id) {
+              <button
+                type="button"
+                class="product-pick"
+                [class.active]="form().productId === product.id"
+                (click)="selectProduct(product)"
+              >
+                <div class="product-pick-media">
+                  <img [src]="product.image" [alt]="product.name" />
+                </div>
+                <div class="product-pick-body">
+                  <strong>{{ product.name }}</strong>
+                  <span>{{ locale.formatPrice(product.price) }}</span>
+                </div>
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="state-card empty">
+            <p>{{ locale.t('customOrder.noCustomProducts') }}</p>
+          </div>
+        }
+      </section>
+    }
+
+    @if (formError()) {
+      <div class="banner error">{{ formError() }}</div>
+    }
+
+    @if (successMessage()) {
+      <div class="banner success">{{ successMessage() }}</div>
+    }
+
+    <section class="form-card">
+      <div class="section-head">
+        <div>
+          <h2>{{ locale.t('customOrder.formTitle') }}</h2>
+          <p>{{ locale.t('customOrder.formSubtitle') }}</p>
+        </div>
+        @if (selectedProduct(); as product) {
+          <span class="selected-pill">{{ locale.t('customOrder.selectedProduct') }}: {{ product.name }}</span>
+        }
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.requestTitle') }}</span>
+          <input
+            [ngModel]="form().title"
+            (ngModelChange)="update('title', $event)"
+            [placeholder]="locale.t('customOrder.requestTitlePlaceholder')"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.quantity') }}</span>
+          <input
+            type="number"
+            min="1"
+            step="1"
+            [ngModel]="form().quantity"
+            (ngModelChange)="update('quantity', $event)"
+          />
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.material') }}</span>
+          <input
+            [ngModel]="form().preferredMaterial"
+            (ngModelChange)="update('preferredMaterial', $event)"
+            [placeholder]="locale.t('customOrder.materialPlaceholder')"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.color') }}</span>
+          <input
+            [ngModel]="form().preferredColor"
+            (ngModelChange)="update('preferredColor', $event)"
+            [placeholder]="locale.t('customOrder.colorPlaceholder')"
+          />
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.sizeDetails') }}</span>
+          <input
+            [ngModel]="form().sizeDetails"
+            (ngModelChange)="update('sizeDetails', $event)"
+            [placeholder]="locale.t('customOrder.sizeDetailsPlaceholder')"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.timeline') }}</span>
+          <input
+            [ngModel]="form().targetTimeline"
+            (ngModelChange)="update('targetTimeline', $event)"
+            [placeholder]="locale.t('customOrder.timelinePlaceholder')"
+          />
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.referenceImage') }}</span>
+          <input
+            [ngModel]="form().referenceImageUrl"
+            (ngModelChange)="update('referenceImageUrl', $event)"
+            [placeholder]="locale.t('customOrder.referenceImagePlaceholder')"
+          />
+        </label>
+        <label class="field">
+          <span class="field-label">{{ locale.t('customOrder.budget') }}</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [ngModel]="form().budget"
+            (ngModelChange)="update('budget', $event)"
+            [placeholder]="locale.t('customOrder.budgetPlaceholder')"
+          />
+          <small class="field-hint">
+            {{ locale.t('customOrder.budgetHint', { currency: locale.currency() }) }}
+          </small>
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field-label">{{ locale.t('customOrder.notes') }}</span>
+        <textarea
+          rows="7"
+          [ngModel]="form().notes"
+          (ngModelChange)="update('notes', $event)"
+          [placeholder]="locale.t('customOrder.notesPlaceholder')"
+        ></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="button" class="btn-primary" [disabled]="saving()" (click)="submit()">
+          {{ saving() ? locale.t('customOrder.submitting') : locale.t('customOrder.submit') }}
+        </button>
+      </div>
+    </section>
+  </section>
+</div>

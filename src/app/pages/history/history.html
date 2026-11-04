@@ -1,0 +1,44 @@
+<div class="page">
+  <app-page-header
+    [title]="content.historyPage.pageTitle"
+    [crumb]="content.historyPage.pageCrumb"
+    [subtitle]="content.historyPage.pageSubtitle"
+  />
+
+  <div class="history-intro" appFadeIn>
+    <h2>{{ content.historyIntro.title }}</h2>
+    <p class="lead">{{ content.historyIntro.lead }}</p>
+    @for (paragraph of content.historyIntro.paragraphs; track paragraph) {
+      <p>{{ paragraph }}</p>
+    }
+  </div>
+
+  <div class="timeline">
+    @for (entry of content.timeline; track entry.year) {
+      <app-timeline-item [entry]="entry" />
+    }
+  </div>
+
+  <section class="craftsmanship">
+    <div class="craft-container">
+      <app-section-header
+        [title]="content.historySections.craftTitle"
+        [subtitle]="content.historySections.craftSubtitle"
+      />
+      <div class="craft-grid" appFadeIn>
+        @for (step of content.craftSteps; track step.title) {
+          <app-info-card [icon]="step.icon" [title]="step.title" [text]="step.text" />
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="values-section">
+    <app-section-header [title]="content.historySections.valuesTitle" />
+    <div class="values-grid" appFadeIn>
+      @for (value of content.values; track value.number) {
+        <app-info-card [number]="value.number" [title]="value.title" [text]="value.text" />
+      }
+    </div>
+  </section>
+</div>

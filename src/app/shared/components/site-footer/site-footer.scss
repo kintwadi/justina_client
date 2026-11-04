@@ -1,0 +1,136 @@
+footer {
+  background: var(--color-footer);
+  color: rgba(250, 248, 245, 0.6);
+  padding: 48px 20px 32px;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.footer-brand .logo {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.footer-brand .logo span {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: rgba(250, 248, 245, 0.55);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.9;
+  margin-bottom: 25px;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-links a {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(250, 248, 245, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-bg);
+  text-decoration: none;
+  font-size: 12px;
+  transition: all 0.3s;
+  letter-spacing: 0;
+}
+
+.social-links a:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.footer-col h4 {
+  color: var(--color-bg);
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col li {
+  margin-bottom: 12px;
+}
+
+.footer-col a {
+  color: rgba(250, 248, 245, 0.6);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.3s;
+  cursor: pointer;
+}
+
+.footer-col a:hover {
+  color: var(--color-accent);
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 30px;
+  border-top: 1px solid rgba(250, 248, 245, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 12px;
+  flex-wrap: wrap;
+  gap: 10px;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  footer {
+    padding: 80px 40px 40px;
+  }
+
+  .footer-container {
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+  }
+
+  .footer-bottom {
+    flex-direction: row;
+    text-align: left;
+  }
+}

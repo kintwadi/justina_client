@@ -1,0 +1,548 @@
+<div class="page">
+  <section class="section editor-page">
+    <header class="editor-head">
+      <div>
+        <a class="back-link" routerLink="/admin">
+          Back to products
+        </a>
+        <h1>{{ isEdit ? 'Edit Product' : 'New Product' }}</h1>
+        <p>Use manual specs for the base product, then add variant-specific details where needed.</p>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="ghost-btn" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn-primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : isEdit ? 'Save Product' : 'Create Product' }}
+        </button>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="state">Loading product…</div>
+    } @else {
+      @if (formError()) {
+        <div class="banner error">{{ formError() }}</div>
+      }
+      @if (uploadNotice()) {
+        <div class="banner info">{{ uploadNotice() }}</div>
+      }
+
+      <div class="editor-grid">
+        <div class="form-col">
+          <div class="card">
+            <h2>Product Basics</h2>
+
+            <label class="field">
+              <span class="field-label">Name *</span>
+              <input [ngModel]="form().name" (ngModelChange)="update('name', $event)" />
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Slug</span>
+                <input [ngModel]="form().slug" (ngModelChange)="update('slug', $event)" />
+              </label>
+              <label class="field">
+                <span class="field-label">Category</span>
+                <select [ngModel]="form().category" (ngModelChange)="updateCategory($event)">
+                  @for (category of categories(); track category.slug) {
+                    <option [value]="category.slug">{{ category.label }}</option>
+                  }
+                </select>
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Product Type</span>
+                <select
+                  [ngModel]="form().productTypePreset"
+                  (ngModelChange)="updateProductTypePreset($event)"
+                >
+                  <option value="">Select a suggested type</option>
+                  @for (type of suggestedTypes(); track type.slug) {
+                    <option [value]="type.slug">{{ type.label }}</option>
+                  }
+                </select>
+              </label>
+              <label class="field">
+                <span class="field-label">Manual Product Type</span>
+                <input
+                  placeholder="Optional custom type"
+                  [ngModel]="form().productTypeCustom"
+                  (ngModelChange)="updateProductTypeCustom($event)"
+                />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Base SKU</span>
+                <input
+                  placeholder="Optional auto-generated if blank"
+                  [ngModel]="form().sku"
+                  (ngModelChange)="update('sku', $event)"
+                />
+              </label>
+              <label class="field">
+                <span class="field-label">Stock Quantity</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  [ngModel]="form().stockQuantity"
+                  (ngModelChange)="update('stockQuantity', $event)"
+                />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Base Price *</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [ngModel]="form().price"
+                  (ngModelChange)="update('price', $event)"
+                />
+              </label>
+              <label class="field">
+                <span class="field-label">Original Price</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [ngModel]="form().originalPrice"
+                  (ngModelChange)="update('originalPrice', $event)"
+                />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="field-label">Badge</span>
+                <input [ngModel]="form().badge" (ngModelChange)="update('badge', $event)" />
+              </label>
+              <label class="field">
+                <span class="field-label">Date</span>
+                <input type="date" [ngModel]="form().date" (ngModelChange)="update('date', $event)" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field-label">Description *</span>
+              <textarea
+                rows="4"
+                [ngModel]="form().description"
+                (ngModelChange)="update('description', $event)"
+              ></textarea>
+            </label>
+
+            <div class="specs-editor">
+              <div class="section-head">
+                <div>
+                  <span class="field-label">Base Product Specs</span>
+                  <p class="subtle">Add manual specifications for the main product.</p>
+                </div>
+                <button type="button" class="link-btn" (click)="addProductOption()">
+                  <app-icon name="plus" [size]="14" />
+                  Add spec
+                </button>
+              </div>
+
+              @for (option of productManualOptions(); track option.uid) {
+                <div class="option-row manual-option-row">
+                  <input
+                    placeholder="Spec key"
+                    [ngModel]="option.key"
+                    (ngModelChange)="updateProductOptionByUid(option.uid, 'key', $event)"
+                  />
+                  <input
+                    placeholder="Spec value"
+                    [ngModel]="option.value"
+                    (ngModelChange)="updateProductOptionByUid(option.uid, 'value', $event)"
+                  />
+                  <button type="button" class="icon-btn danger" (click)="removeProductOptionByUid(option.uid)">
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No base product specs yet.</p>
+              }
+            </div>
+
+            <div class="check-row">
+              <label class="check">
+                <input type="checkbox" [ngModel]="form().inStock" (ngModelChange)="update('inStock', $event)" />
+                <span>In stock</span>
+              </label>
+              <label class="check">
+                <input type="checkbox" [ngModel]="form().featured" (ngModelChange)="update('featured', $event)" />
+                <span>Featured</span>
+              </label>
+              <label class="check">
+                <input
+                  type="checkbox"
+                  [ngModel]="form().customMade"
+                  (ngModelChange)="update('customMade', $event)"
+                />
+                <span>Available for custom order</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Translations</h2>
+                <p class="subtle">Override name, description, and badge per language. Blank fields fall back to the base language.</p>
+              </div>
+              <div class="lang-pills">
+                @for (language of languages; track language.code) {
+                  <button
+                    type="button"
+                    class="lang-pill"
+                    [class.active]="translationLanguage() === language.code"
+                    (click)="setTranslationLanguage(language.code)"
+                  >
+                    <app-icon [name]="language.flagIcon" [size]="16" />
+                    {{ language.label }}
+                  </button>
+                }
+              </div>
+            </div>
+
+            @if (isBaseLanguage()) {
+              <p class="muted">
+                Base language. Edit the base Name, Badge, and Description in Product Basics above — they are shown whenever a translation is missing.
+              </p>
+            } @else {
+              <div class="field-row">
+                <label class="field">
+                  <span class="field-label">Name ({{ translationLanguage().toUpperCase() }})</span>
+                  <input
+                    [ngModel]="translationValue('name')"
+                    (ngModelChange)="updateTranslation('name', $event)"
+                    [placeholder]="form().name"
+                  />
+                </label>
+                <label class="field">
+                  <span class="field-label">Badge ({{ translationLanguage().toUpperCase() }})</span>
+                  <input
+                    [ngModel]="translationValue('badge')"
+                    (ngModelChange)="updateTranslation('badge', $event)"
+                    [placeholder]="form().badge"
+                  />
+                </label>
+              </div>
+
+              <label class="field">
+                <span class="field-label">Description ({{ translationLanguage().toUpperCase() }})</span>
+                <textarea
+                  rows="4"
+                  [ngModel]="translationValue('description')"
+                  (ngModelChange)="updateTranslation('description', $event)"
+                  [placeholder]="form().description"
+                ></textarea>
+              </label>
+            }
+          </div>
+
+          <div class="card">
+            <h2>Product Media</h2>
+
+            <label class="field">
+              <span class="field-label">Main Image URL *</span>
+              <input [ngModel]="form().image" (ngModelChange)="update('image', $event)" />
+            </label>
+
+            <div class="row-actions">
+              <label class="upload-btn">
+                <app-icon name="upload" [size]="16" />
+                {{ uploading() ? 'Uploading…' : 'Upload image' }}
+                <input type="file" accept="image/*" hidden [disabled]="uploading()" (change)="onProductImageSelected($event)" />
+              </label>
+              <button type="button" class="ghost-btn" (click)="generateProductImage()">Generate image</button>
+            </div>
+
+            <div class="gallery-editor">
+              <div class="section-head">
+                <span class="field-label">Gallery</span>
+                <button type="button" class="link-btn" (click)="addProductGalleryImage()">
+                  <app-icon name="plus" [size]="14" />
+                  Add image
+                </button>
+              </div>
+
+              <div class="row-actions">
+                <label class="upload-btn">
+                  <app-icon name="upload" [size]="16" />
+                  Upload gallery images
+                  <input type="file" accept="image/*" multiple hidden [disabled]="uploading()" (change)="onProductGallerySelected($event)" />
+                </label>
+                <button type="button" class="ghost-btn" (click)="generateProductGalleryImage()">Generate gallery image</button>
+              </div>
+
+              @for (image of form().gallery; track $index) {
+                <div class="gallery-row">
+                  <input
+                    type="text"
+                    [ngModel]="image"
+                    (ngModelChange)="updateProductGalleryImage($index, $event)"
+                  />
+                  <button type="button" class="icon-btn danger" (click)="removeProductGalleryImage($index)">
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+              } @empty {
+                <p class="muted">No gallery images yet.</p>
+              }
+            </div>
+
+            <label class="field">
+              <span class="field-label">Image Style Class</span>
+              <input [ngModel]="form().imageClass" (ngModelChange)="update('imageClass', $event)" />
+            </label>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Variants</h2>
+                <p class="subtle">Each variant can carry its own price, image, gallery, stock, and specs.</p>
+              </div>
+              <button type="button" class="link-btn" (click)="addVariant()">
+                <app-icon name="plus" [size]="14" />
+                Add variant
+              </button>
+            </div>
+
+            @for (variant of form().variants; track variant.uid; let variantIndex = $index) {
+              <article class="variant-card">
+                <div class="section-head">
+                  <strong>{{ variant.name || 'New Variant' }}</strong>
+                  <button type="button" class="icon-btn danger" (click)="removeVariant(variantIndex)">
+                    <app-icon name="minus" [size]="16" />
+                  </button>
+                </div>
+
+                <div class="field-row">
+                  <label class="field">
+                    <span class="field-label">Variant Name *</span>
+                    <input [ngModel]="variant.name" (ngModelChange)="updateVariant(variantIndex, 'name', $event)" />
+                  </label>
+                  <label class="field">
+                    <span class="field-label">SKU</span>
+                    <input [ngModel]="variant.sku" (ngModelChange)="updateVariant(variantIndex, 'sku', $event)" />
+                  </label>
+                </div>
+
+                <div class="field-row">
+                  <label class="field">
+                    <span class="field-label">Variant Price *</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      [ngModel]="variant.price"
+                      (ngModelChange)="updateVariant(variantIndex, 'price', $event)"
+                    />
+                  </label>
+                  <label class="field">
+                    <span class="field-label">Stock</span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      [ngModel]="variant.stock"
+                      (ngModelChange)="updateVariant(variantIndex, 'stock', $event)"
+                    />
+                  </label>
+                </div>
+
+                <label class="field">
+                  <span class="field-label">Variant Image URL</span>
+                  <input [ngModel]="variant.image" (ngModelChange)="updateVariant(variantIndex, 'image', $event)" />
+                </label>
+
+                <div class="row-actions">
+                  <label class="upload-btn">
+                    <app-icon name="upload" [size]="16" />
+                    Upload variant image
+                    <input type="file" accept="image/*" hidden [disabled]="uploading()" (change)="onVariantImageSelected(variantIndex, $event)" />
+                  </label>
+                  <button type="button" class="ghost-btn" (click)="generateVariantImage(variantIndex)">Generate image</button>
+                </div>
+
+                <div class="gallery-editor">
+                  <div class="section-head">
+                    <span class="field-label">Variant Gallery</span>
+                    <button type="button" class="link-btn" (click)="addVariantGalleryImage(variantIndex)">
+                      <app-icon name="plus" [size]="14" />
+                      Add image
+                    </button>
+                  </div>
+
+                  <div class="row-actions">
+                    <label class="upload-btn">
+                      <app-icon name="upload" [size]="16" />
+                      Upload variant gallery
+                      <input type="file" accept="image/*" multiple hidden [disabled]="uploading()" (change)="onVariantGallerySelected(variantIndex, $event)" />
+                    </label>
+                    <button type="button" class="ghost-btn" (click)="generateVariantGalleryImage(variantIndex)">Generate gallery image</button>
+                  </div>
+
+                  @for (image of variant.gallery; track $index; let galleryIndex = $index) {
+                    <div class="gallery-row">
+                      <input
+                        type="text"
+                        [ngModel]="image"
+                        (ngModelChange)="updateVariantGalleryImage(variantIndex, galleryIndex, $event)"
+                      />
+                      <button type="button" class="icon-btn danger" (click)="removeVariantGalleryImage(variantIndex, galleryIndex)">
+                        <app-icon name="minus" [size]="16" />
+                      </button>
+                    </div>
+                  } @empty {
+                    <p class="muted">No variant gallery images yet.</p>
+                  }
+                </div>
+
+                <div class="options-grid">
+                  <div>
+                    <span class="field-label">Preset Specs</span>
+                    @for (option of presetOptions(variant); track option.uid) {
+                      <div class="option-row">
+                        <input [value]="option.key" disabled />
+                        <input
+                          [ngModel]="option.value"
+                          (ngModelChange)="updateOptionByUid(variantIndex, option.uid, 'value', $event)"
+                        />
+                      </div>
+                    } @empty {
+                      <p class="muted">No preset fields for this product type.</p>
+                    }
+                  </div>
+
+                  <div>
+                    <div class="section-head">
+                      <span class="field-label">Manual Specs</span>
+                      <button type="button" class="link-btn" (click)="addManualOption(variantIndex)">
+                        <app-icon name="plus" [size]="14" />
+                        Add spec
+                      </button>
+                    </div>
+
+                    @for (option of manualOptions(variant); track option.uid) {
+                      <div class="option-row manual-option-row">
+                        <input
+                          placeholder="Spec key"
+                          [ngModel]="option.key"
+                          (ngModelChange)="updateOptionByUid(variantIndex, option.uid, 'key', $event)"
+                        />
+                        <input
+                          placeholder="Spec value"
+                          [ngModel]="option.value"
+                          (ngModelChange)="updateOptionByUid(variantIndex, option.uid, 'value', $event)"
+                        />
+                        <button type="button" class="icon-btn danger" (click)="removeOptionByUid(variantIndex, option.uid)">
+                          <app-icon name="minus" [size]="16" />
+                        </button>
+                      </div>
+                    } @empty {
+                      <p class="muted">No manual specs yet.</p>
+                    }
+                  </div>
+                </div>
+
+                @if (variantPreviewImages(variant).length > 0) {
+                  <div class="variant-preview-strip">
+                    @for (image of variantPreviewImages(variant); track image) {
+                      <div class="preview-thumb">
+                        <img [src]="previewImageSrc(image)" alt="" />
+                      </div>
+                    }
+                  </div>
+                }
+              </article>
+            } @empty {
+              <p class="muted">No variants yet. Add one to define size, color, or other specs.</p>
+            }
+          </div>
+        </div>
+
+        <aside class="preview-col">
+          <div class="preview-card">
+            <span class="preview-tag">Live Preview · {{ translationLanguage().toUpperCase() }}</span>
+            <div class="preview-media">
+              <div class="media-fill" [class]="form().imageClass || 'prod-img-1'">
+                @if (form().image) {
+                  <img [src]="previewImageSrc(form().image)" alt="" />
+                }
+              </div>
+              @if (previewBadge()) {
+                <span class="preview-badge">{{ previewBadge() }}</span>
+              }
+            </div>
+            @if (previewGallery().length > 1) {
+              <div class="preview-gallery">
+                @for (image of previewGallery(); track image) {
+                  <div class="preview-thumb">
+                    <img [src]="previewImageSrc(image)" alt="" />
+                  </div>
+                }
+              </div>
+            }
+            <div class="preview-body">
+              <span class="preview-cat">{{ form().category }}</span>
+              @if (resolvedProductType()) {
+                <span class="preview-type">{{ resolvedProductType() }}</span>
+              }
+              <h3 class="preview-name">{{ previewName() }}</h3>
+              <p class="preview-price">
+                <span>{{ previewPrice() }}</span>
+                @if (form().originalPrice; as originalPrice) {
+                  <span class="strike">{{ price(originalPrice) }}</span>
+                }
+              </p>
+              @if (previewDescription()) {
+                <p class="preview-desc">{{ previewDescription() }}</p>
+              }
+              <div class="preview-meta">
+                <div class="preview-meta-row">
+                  <span>SKU</span>
+                  <strong>{{ previewSku() }}</strong>
+                </div>
+                <div class="preview-meta-row">
+                  <span>Base Stock</span>
+                  <strong>{{ previewStock() }}</strong>
+                </div>
+              </div>
+              @if (productManualOptions().length > 0) {
+                <div class="preview-specs">
+                  <span class="field-label">Specs</span>
+                  @for (option of productManualOptions(); track option.uid) {
+                    <div class="preview-spec-row">
+                      <span>{{ labelize(option.key) }}</span>
+                      <strong>{{ option.value }}</strong>
+                    </div>
+                  }
+                </div>
+              }
+              <span class="pill" [class.on]="form().inStock" [class.off]="!form().inStock">
+                {{ form().inStock ? 'In Stock' : 'Sold Out' }}
+              </span>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="editor-actions">
+        <button type="button" class="ghost-btn" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn-primary" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving…' : isEdit ? 'Save Product' : 'Create Product' }}
+        </button>
+      </div>
+    }
+  </section>
+</div>

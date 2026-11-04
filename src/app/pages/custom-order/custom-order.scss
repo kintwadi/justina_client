@@ -1,0 +1,194 @@
+.custom-order-page {
+  display: grid;
+  gap: 24px;
+}
+
+.intro-grid,
+.field-row,
+.product-picker-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.intro-card,
+.picker-card,
+.form-card,
+.state-card {
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+}
+
+.eyebrow,
+.field-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+.intro-card strong,
+.section-head h2 {
+  font-size: 24px;
+  margin: 0 0 8px;
+}
+
+.intro-card p,
+.section-head p,
+.field-hint,
+.state-card p {
+  margin: 0;
+  color: var(--color-text-light);
+}
+
+.mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mode-btn,
+.product-pick,
+.btn-primary {
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-text);
+  transition: all 0.25s ease;
+}
+
+.mode-btn {
+  padding: 12px 16px;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.mode-btn.active,
+.btn-primary,
+.product-pick.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.section-head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.selected-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 8px 12px;
+  border: 1px solid rgba(165, 125, 17, 0.2);
+  background: rgba(165, 125, 17, 0.08);
+  color: var(--color-accent);
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.product-picker-grid {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.product-pick {
+  display: grid;
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+}
+
+.product-pick-media {
+  aspect-ratio: 4 / 3;
+  background: #f6f1ea;
+}
+
+.product-pick-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-pick-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.product-pick.active .product-pick-body span,
+.product-pick.active .product-pick-body strong {
+  color: inherit;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  font: inherit;
+  color: var(--color-text);
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  padding: 14px 22px;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.banner {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+}
+
+.banner.error {
+  border-color: #c26565;
+  background: rgba(194, 101, 101, 0.08);
+  color: #8a2d2d;
+}
+
+.banner.success {
+  border-color: #7da16c;
+  background: rgba(125, 161, 108, 0.12);
+  color: #476539;
+}
+
+@media (min-width: 768px) {
+  .intro-grid,
+  .field-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-picker-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

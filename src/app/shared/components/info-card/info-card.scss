@@ -1,0 +1,77 @@
+.info-card {
+  padding: 32px 22px;
+  background: var(--color-white);
+  border-radius: 4px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.info-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 22px;
+  background: var(--color-bg-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.info-card h4 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.info-card p {
+  color: var(--color-text-light);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* Numbered variant used by the "Our Values" grid. */
+.info-card.numbered {
+  padding: 32px 22px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.info-card.numbered:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 10px 30px var(--color-shadow);
+  transform: none;
+}
+
+.info-number {
+  font-family: var(--font-display);
+  font-size: 50px;
+  color: var(--color-accent);
+  font-weight: 600;
+  margin-bottom: 18px;
+  line-height: 1;
+}
+
+.info-card.numbered h4 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.info-card.numbered p {
+  line-height: 1.9;
+}
+
+.info-card:not(.numbered):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px var(--color-shadow);
+}
+
+@media (min-width: 640px) {
+  .info-card {
+    padding: 45px 30px;
+  }
+
+  .info-card.numbered {
+    padding: 45px;
+  }
+}

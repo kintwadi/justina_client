@@ -1,0 +1,120 @@
+<div class="page">
+  <app-page-header
+    [title]="content.contactPage.pageTitle"
+    [crumb]="content.contactPage.pageCrumb"
+    [subtitle]="content.contactPage.pageSubtitle"
+  />
+
+  <div class="contact-layout">
+    <div class="contact-info" appFadeIn>
+      <h2>{{ content.contactPage.introTitle }}</h2>
+      <p>{{ content.contactPage.introText }}</p>
+
+      @for (block of content.contactInfo; track block.title) {
+        <div class="contact-block">
+          <h4>{{ block.title }}</h4>
+          <p>
+            @for (line of block.lines; track line) {
+              {{ line }}<br />
+            }
+          </p>
+        </div>
+      }
+
+      <div class="contact-block">
+        <h4>{{ content.contactPage.getInTouchTitle }}</h4>
+        <a [href]="'mailto:' + content.brand.email">{{ content.brand.email }}</a>
+        <a [href]="'tel:' + content.brand.phone.replace(' ', '')">{{ content.brand.phone }}</a>
+        <a [href]="content.brand.instagramUrl" target="_blank" rel="noopener">
+          {{ content.brand.instagramHandle }}
+        </a>
+      </div>
+
+      <div class="contact-block">
+        <h4>{{ content.contactPage.customerServiceTitle }}</h4>
+        <p>{{ content.contactPage.customerServiceText }}</p>
+      </div>
+    </div>
+
+    <form class="contact-form" appFadeIn (submit)="submit($event)">
+      <h3>{{ content.contactPage.formTitle }}</h3>
+      <p>{{ content.contactPage.formIntro }}</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">{{ locale.t('contact.firstName') }}</label>
+          <input
+            id="firstName"
+            type="text"
+            required
+            [value]="form().firstName"
+            (input)="onInput('firstName', $event)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="lastName">{{ locale.t('contact.lastName') }}</label>
+          <input
+            id="lastName"
+            type="text"
+            required
+            [value]="form().lastName"
+            (input)="onInput('lastName', $event)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">{{ locale.t('contact.email') }}</label>
+        <input
+          id="email"
+          type="email"
+          required
+          [value]="form().email"
+          (input)="onInput('email', $event)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="subject">{{ locale.t('contact.subject') }}</label>
+        <select id="subject" required (change)="onInput('subject', $event)">
+          <option value="">{{ locale.t('contact.subjectPlaceholder') }}</option>
+          @for (subject of content.contactSubjects; track subject) {
+            <option [value]="subject">{{ subject }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">{{ locale.t('contact.message') }}</label>
+        <textarea
+          id="message"
+          required
+          [placeholder]="locale.t('contact.messagePlaceholder')"
+          [value]="form().message"
+          (input)="onInput('message', $event)"
+        ></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="sending()">
+        {{ sending() ? locale.t('contact.sending') : locale.t('contact.send') }}
+      </button>
+    </form>
+  </div>
+
+  @if (showVisitAtelierSection) {
+    <div class="map-section">
+      <div class="map-overlay">
+        <h3>Visit Our Atelier</h3>
+        <p>Rue de l'Artisan 42, 1000 Brussels</p>
+        <a href="https://maps.google.com" target="_blank" rel="noopener">Open in Maps</a>
+      </div>
+    </div>
+  }
+
+  <section class="faq-section">
+    <div class="faq-container">
+      <app-section-header [title]="locale.t('contact.faqTitle')" />
+      <app-faq-accordion [items]="content.faqs" />
+    </div>
+  </section>
+</div>

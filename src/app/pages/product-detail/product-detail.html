@@ -1,0 +1,141 @@
+<div class="page">
+  <section class="section detail-page">
+    <header class="detail-head">
+      <button type="button" class="nav-arrow back-btn" (click)="goBack()" [attr.aria-label]="locale.t('product.back')">
+        <span class="arrow-left">
+          <app-icon name="arrow-right" [size]="18" />
+        </span>
+        <span>{{ locale.t('product.back') }}</span>
+      </button>
+
+      <div class="pager">
+        <button
+          type="button"
+          class="nav-arrow"
+          [disabled]="!previousProduct()"
+          (click)="previousProduct() && openProduct(previousProduct()!.id)"
+          [attr.aria-label]="locale.t('product.previous')"
+        >
+          <span class="arrow-left">
+            <app-icon name="arrow-right" [size]="18" />
+          </span>
+        </button>
+        <button
+          type="button"
+          class="nav-arrow"
+          [disabled]="!nextProduct()"
+          (click)="nextProduct() && openProduct(nextProduct()!.id)"
+          [attr.aria-label]="locale.t('product.next')"
+        >
+          <app-icon name="arrow-right" [size]="18" />
+        </button>
+      </div>
+    </header>
+
+    @if (loading()) {
+      <div class="state-card">{{ locale.t('product.loading') }}</div>
+    } @else if (product(); as product) {
+      <div class="detail-shell">
+        <div class="media-panel">
+          <div [class]="imageClasses(product.imageClass)">
+            @if (activeImage(); as image) {
+              <img [src]="image" [alt]="product.name" />
+            }
+          </div>
+          @if (galleryImages().length > 1) {
+            <div class="thumbnail-strip">
+              @for (image of galleryImages(); track image) {
+                <button
+                  type="button"
+                  class="thumbnail-btn"
+                  [class.active]="activeImage() === image"
+                  (click)="selectImage(image)"
+                >
+                  <img [src]="image" [alt]="product.name" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="detail-content">
+          <div class="product-category">{{ product.category }}</div>
+          <h1>{{ product.name }}</h1>
+          <div class="price">
+            {{ locale.formatPrice(activePrice()) }}
+            @if (activeOriginalPrice(); as originalPrice) {
+              <span class="original-price">{{ locale.formatPrice(originalPrice) }}</span>
+            }
+          </div>
+          <p class="description">{{ product.description }}</p>
+
+          @if (variants().length > 0) {
+            <div class="variant-panel">
+              <div class="details-title">{{ locale.t('product.selectSize') }}</div>
+              <div class="variant-options">
+                @for (variant of variants(); track variant.sku) {
+                  <button
+                    type="button"
+                    class="variant-btn"
+                    [class.active]="selectedVariant()?.sku === variant.sku"
+                    [class.sold-out]="variant.stock <= 0"
+                    (click)="selectVariant(variant)"
+                  >
+                    <span>{{ variant.name }}</span>
+                    @if (variant.priceDelta && variant.priceDelta > 0) {
+                      <small>+{{ locale.formatPrice(variant.priceDelta) }}</small>
+                    }
+                  </button>
+                }
+              </div>
+
+              @if (selectedVariant(); as variant) {
+                <div class="main-product-hint">
+                  <span class="hint-text"
+                    >{{ locale.t('product.viewing') }} <strong>{{ variant.name }}</strong></span
+                  >
+                  <button type="button" class="hint-link" (click)="clearVariantSelection()">
+                    <span class="arrow-left">
+                      <app-icon name="arrow-right" [size]="12" />
+                    </span>
+                    <span>{{ locale.t('product.backTo') }} {{ product.name }}</span>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          @if (variantDetailRows().length > 0) {
+            <div class="variant-details" [class.standalone]="variants().length === 0">
+              @for (detail of variantDetailRows(); track detail.label) {
+                <div class="detail-row">
+                  <span>{{ detail.label }}</span>
+                  <strong>{{ detail.value }}</strong>
+                </div>
+              }
+            </div>
+          }
+
+          <button
+            class="add-to-cart-btn"
+            type="button"
+            [disabled]="!product.customMade && !canAddToBag()"
+            (click)="addToBag()"
+          >
+            {{ addToBagLabel() }}
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="state-card">
+        <p>{{ locale.t('product.notFound') }}</p>
+        <button type="button" class="nav-arrow back-btn" (click)="goBack()">
+          <span class="arrow-left">
+            <app-icon name="arrow-right" [size]="18" />
+          </span>
+          <span>{{ locale.t('product.backToShop') }}</span>
+        </button>
+      </div>
+    }
+  </section>
+</div>

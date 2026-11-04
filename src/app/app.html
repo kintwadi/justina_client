@@ -1,0 +1,14 @@
+<app-announcement-bar />
+<app-site-header />
+
+<main>
+  <router-outlet />
+</main>
+
+@if (showNewsletterSignup) {
+  <app-newsletter-signup />
+}
+<app-site-footer />
+
+<app-cart-drawer />
+<app-toast-host />

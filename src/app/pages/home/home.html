@@ -1,0 +1,107 @@
+<div class="page">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-tagline">{{ content.hero.tagline }}</div>
+      <h1>
+        @for (line of content.hero.titleLines; track line) {
+          <span>{{ line }}</span>
+        }
+      </h1>
+      <p class="hero-sub">{{ content.hero.subtitle }}</p>
+      <a class="hero-btn" routerLink="/shop">{{ content.hero.ctaLabel }}</a>
+    </div>
+    <div class="hero-scroll">{{ content.hero.scrollLabel }}</div>
+  </section>
+
+  <section class="section">
+    <app-section-header
+      [title]="content.homeSections.worldTitle"
+      [subtitle]="content.homeSections.worldSubtitle"
+    />
+    <div class="categories" appFadeIn>
+      @for (tile of catalog.categoryTiles(); track tile.title) {
+        <app-category-tile-card [tile]="tile" />
+      }
+    </div>
+  </section>
+
+  <section class="featured-banner">
+    <div class="featured-container">
+      <div class="featured-image featured-img-bg" appFadeIn>
+        <img [src]="content.featuredPiece.image" [alt]="content.featuredPiece.title" loading="lazy" />
+      </div>
+      <div class="featured-text" appFadeIn>
+        <span class="featured-tag">{{ content.featuredPiece.tag }}</span>
+        <h3>{{ content.featuredPiece.title }}</h3>
+        <p>{{ content.featuredPiece.text }}</p>
+        <a class="hero-btn solid" routerLink="/shop">{{ content.featuredPiece.ctaLabel }}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <app-section-header
+      [title]="content.homeSections.featuredTitle"
+      [subtitle]="content.homeSections.featuredSubtitle"
+    />
+    <div appFadeIn>
+      <app-product-grid [products]="featured()" />
+    </div>
+    <div class="section-cta">
+      <a class="hero-btn dark" routerLink="/shop">{{ content.homeSections.featuredCta }}</a>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-container">
+      <div class="about-image about-img-bg" appFadeIn>
+        <img [src]="content.about.image" [alt]="content.about.title" loading="lazy" />
+      </div>
+      <div class="about-text" appFadeIn>
+        <h2>{{ content.about.title }}</h2>
+        @for (paragraph of content.about.paragraphs; track paragraph) {
+          <p>{{ paragraph }}</p>
+        }
+        <div class="about-stats">
+          @for (stat of content.about.stats; track stat.label) {
+            <div class="stat-item">
+              <h4>{{ stat.value }}</h4>
+              <p>{{ stat.label }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <app-section-header [title]="content.homeSections.testimonialsTitle" />
+    <div class="testimonial-grid" appFadeIn>
+      @for (testimonial of content.testimonials; track testimonial.author) {
+        <app-testimonial-card [testimonial]="testimonial" />
+      }
+    </div>
+  </section>
+
+  <section class="instagram-section">
+    <h2 appFadeIn>{{ content.homeSections.instagramTitle }}</h2>
+    <a
+      class="ig-handle"
+      [href]="content.brand.instagramUrl"
+      target="_blank"
+      rel="noopener"
+      appFadeIn
+    >
+      {{ content.brand.instagramHandle }}
+    </a>
+    <div class="instagram-grid" appFadeIn>
+      @for (tile of content.instagramTiles; track tile.imageClass) {
+        <div class="ig-item">
+          <div [class]="'ig-placeholder ' + tile.imageClass">
+            <img [src]="tile.image" alt="Atelier Justinazaqueu on Instagram" loading="lazy" />
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>

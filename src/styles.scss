@@ -1,0 +1,356 @@
+/* ==========================================================================
+   Atelier Justinazaqueu — global design system
+   Ported from layout_sample.html and extended for the Angular app.
+   ========================================================================== */
+
+@use 'theme' as *;
+
+/* Design tokens exposed as CSS custom properties so component styles can share them. */
+:root {
+  --font-display: #{$font-display};
+  --font-body: #{$font-body};
+  --color-bg: #{$color-bg};
+  --color-bg-dark: #{$color-bg-dark};
+  --color-text: #{$color-text};
+  --color-text-light: #{$color-text-light};
+  --color-accent: #{$color-accent};
+  --color-accent-light: #{$color-accent-light};
+  --color-white: #{$color-white};
+  --color-border: #{$color-border};
+  --color-shadow: #{$color-shadow};
+  --color-footer: #{$color-footer};
+  --color-danger: #{$color-danger};
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-body;
+  font-weight: 300;
+  background: $color-bg;
+  color: $color-text;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: $font-display;
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* ===== Shared page primitives (mobile-first) ===== */
+.section {
+  padding: 64px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 110px 40px;
+  }
+}
+
+.page {
+  animation: pageFade 0.5s ease;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===== Buttons ===== */
+.hero-btn {
+  display: inline-block;
+  padding: 16px 38px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  transition: all 0.4s;
+  cursor: pointer;
+  background: none;
+  font-family: $font-body;
+}
+
+@media (min-width: 768px) {
+  .hero-btn {
+    padding: 18px 55px;
+  }
+}
+
+.hero-btn:hover {
+  background: #fff;
+  color: $color-text;
+}
+
+.hero-btn.solid {
+  background: #fff;
+  color: $color-text;
+  border-color: #fff;
+}
+
+.hero-btn.solid:hover {
+  background: $color-accent;
+  color: #fff;
+  border-color: $color-accent;
+}
+
+.hero-btn.dark {
+  background: $color-text;
+  color: #fff;
+  border-color: $color-text;
+}
+
+.hero-btn.dark:hover {
+  background: $color-accent;
+  color: #fff;
+  border-color: $color-accent;
+}
+
+.action-btn {
+  padding: 12px 22px;
+  background: #fff;
+  border: none;
+  font-family: $font-body;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.action-btn:hover {
+  background: $color-text;
+  color: #fff;
+}
+
+.action-btn.primary {
+  background: $color-text;
+  color: #fff;
+}
+
+.action-btn.primary:hover {
+  background: $color-accent;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 17px;
+  background: $color-text;
+  color: #fff;
+  border: none;
+  font-family: $font-body;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 2px;
+}
+
+.submit-btn:hover {
+  background: $color-accent;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 18px;
+  background: $color-text;
+  color: #fff;
+  border: none;
+  font-family: $font-body;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s;
+  border-radius: 2px;
+}
+
+.checkout-btn:hover {
+  background: $color-accent;
+}
+
+/* ===== Pill tabs (segmented filters) ===== */
+.filter-tab {
+  padding: 10px 24px;
+  border: 1px solid $color-border;
+  background: $color-white;
+  color: $color-text-light;
+  font-family: $font-body;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all 0.3s;
+}
+
+.filter-tab:hover {
+  border-color: $color-accent;
+  color: $color-accent;
+}
+
+.filter-tab.active {
+  background: $color-text;
+  border-color: $color-text;
+  color: $color-white;
+}
+
+/* ===== Product grids (mobile-first) ===== */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 45px;
+  }
+}
+
+.products-grid .empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: $color-text-light;
+}
+
+/* ===== Scroll reveal ===== */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Gradient placeholders / image backdrops ===== */
+.prod-img-1 {
+  background: linear-gradient(145deg, #d4a574, $color-accent, #5c4033);
+}
+.prod-img-2 {
+  background: linear-gradient(145deg, $color-accent-light, #a0784c, #6b4423);
+}
+.prod-img-3 {
+  background: linear-gradient(145deg, #3d2b1f, #5c4033, $color-accent);
+}
+.prod-img-4 {
+  background: linear-gradient(145deg, #b8860b, #d4a574, $color-accent);
+}
+.prod-img-5 {
+  background: linear-gradient(145deg, #654321, $color-accent, $color-accent-light);
+}
+.prod-img-6 {
+  background: linear-gradient(145deg, #5c4033, $color-accent, #d4a574);
+}
+.prod-img-7 {
+  background: linear-gradient(145deg, $color-accent, #654321, #3d2b1f);
+}
+.prod-img-8 {
+  background: linear-gradient(145deg, #a0784c, $color-accent-light, #654321);
+}
+.ig-1 {
+  background: linear-gradient(135deg, #d4a574, $color-accent);
+}
+.ig-2 {
+  background: linear-gradient(135deg, #5c4033, $color-accent-light);
+}
+.ig-3 {
+  background: linear-gradient(135deg, $color-accent, #654321);
+}
+.ig-4 {
+  background: linear-gradient(135deg, #3d2b1f, #d4a574);
+}
+.ig-5 {
+  background: linear-gradient(135deg, $color-accent-light, #5c4033);
+}
+.ig-6 {
+  background: linear-gradient(135deg, #654321, $color-accent);
+}
+.cat-1 {
+  background: linear-gradient(135deg, $color-accent, #3d2b1f);
+}
+.cat-2 {
+  background: linear-gradient(135deg, #5c4033, $color-accent-light);
+}
+.cat-3 {
+  background: linear-gradient(135deg, #654321, #d4a574);
+}
+.cat-4 {
+  background: linear-gradient(135deg, #3d2b1f, $color-accent);
+}
+.coll-1 {
+  background: linear-gradient(135deg, #5c4033 0%, $color-accent 50%, #d4a574 100%);
+}
+.coll-2 {
+  background: linear-gradient(135deg, #3d2b1f 0%, #654321 50%, $color-accent-light 100%);
+}
+.coll-3 {
+  background: linear-gradient(135deg, $color-accent 0%, #a0784c 50%, #5c4033 100%);
+}
+.coll-4 {
+  background: linear-gradient(135deg, #654321 0%, $color-accent 50%, #d4a574 100%);
+}
+.about-img-bg {
+  background: linear-gradient(135deg, #5c4033 0%, $color-accent 50%, #d4a574 100%);
+}
+.featured-img-bg {
+  background: linear-gradient(135deg, #3d2b1f 0%, $color-accent 50%, $color-accent-light 100%);
+}
+
+/* Backdrop used behind generated imagery so cards never look empty. */
+.media-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.media-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

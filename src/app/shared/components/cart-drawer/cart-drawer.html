@@ -1,0 +1,77 @@
+<div class="cart-overlay" [class.active]="ui.cartOpen()" (click)="ui.closeCart()"></div>
+
+<aside class="cart-sidebar" [class.active]="ui.cartOpen()" [attr.aria-label]="locale.t('cart.title')">
+  <div class="cart-header">
+    <h3>{{ locale.t('cart.title') }}</h3>
+    <button
+      class="cart-close"
+      type="button"
+      [attr.aria-label]="locale.t('cart.close')"
+      (click)="ui.closeCart()"
+    >
+      <app-icon name="close" [size]="20" />
+    </button>
+  </div>
+
+  <div class="cart-items">
+    @if (cart.isEmpty()) {
+      <div class="cart-empty">
+        <app-icon name="cart" [size]="60" [strokeWidth]="1" />
+        <p>{{ locale.t('cart.empty') }}</p>
+      </div>
+    } @else {
+      @for (line of cart.items(); track line.product.id + '-' + (line.product.selectedVariantSku ?? 'base')) {
+        <div class="cart-item">
+          <div [class]="imageClasses(line.product.imageClass)">
+            <img [src]="line.product.image" [alt]="line.product.name" />
+          </div>
+          <div class="cart-item-details">
+            <h4>{{ line.product.name }}</h4>
+            @if (line.product.selectedVariantName) {
+              <div class="item-variant">{{ line.product.selectedVariantName }}</div>
+            }
+            <div class="item-price">{{ locale.formatPrice(line.product.price) }}</div>
+            <div class="quantity-control">
+              <button
+                class="qty-btn"
+                type="button"
+                [attr.aria-label]="locale.t('cart.decrease')"
+                (click)="cart.increment(line.product.id, -1, line.product.selectedVariantSku)"
+              >
+                −
+              </button>
+              <span>{{ line.quantity }}</span>
+              <button
+                class="qty-btn"
+                type="button"
+                [attr.aria-label]="locale.t('cart.increase')"
+                (click)="cart.increment(line.product.id, 1, line.product.selectedVariantSku)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <button
+            class="cart-item-remove"
+            type="button"
+            (click)="cart.remove(line.product.id, line.product.selectedVariantSku)"
+          >
+            {{ locale.t('cart.remove') }}
+          </button>
+        </div>
+      }
+    }
+  </div>
+
+  @if (!cart.isEmpty()) {
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>{{ locale.t('cart.total') }}</span>
+        <span>{{ locale.formatPrice(cart.subtotal()) }}</span>
+      </div>
+      <button class="checkout-btn" type="button" [disabled]="processing()" (click)="checkout()">
+        {{ processing() ? locale.t('cart.redirecting') : locale.t('cart.checkout') }}
+      </button>
+    </div>
+  }
+</aside>

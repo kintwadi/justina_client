@@ -1,0 +1,91 @@
+:host {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+  align-items: center;
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  margin: 0 auto;
+  box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 5px var(--color-border);
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+}
+
+.timeline-year {
+  display: none;
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 600;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.timeline-content h4 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.timeline-content p {
+  color: var(--color-text-light);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+:host(:nth-child(odd)) .timeline-content,
+:host(:nth-child(even)) .timeline-content {
+  grid-column: 2;
+  text-align: left;
+}
+
+.timeline-content::before {
+  content: attr(data-year);
+  display: block;
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-accent);
+  margin-bottom: 10px;
+}
+
+@media (min-width: 1024px) {
+  :host {
+    grid-template-columns: 1fr 80px 1fr;
+    margin-bottom: 70px;
+  }
+
+  .timeline-dot {
+    grid-column: 2;
+  }
+
+  .timeline-year {
+    display: block;
+  }
+
+  :host(:nth-child(odd)) .timeline-content {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  :host(:nth-child(odd)) .timeline-year {
+    grid-column: 3;
+  }
+
+  :host(:nth-child(even)) .timeline-year {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  :host(:nth-child(even)) .timeline-content {
+    grid-column: 3;
+  }
+
+  .timeline-content::before {
+    display: none;
+  }
+}

@@ -1,0 +1,38 @@
+<div class="page">
+  <app-page-header
+    [title]="content.reviewsPage.pageTitle"
+    [crumb]="content.reviewsPage.pageCrumb"
+    [subtitle]="content.reviewsPage.pageSubtitle"
+  />
+
+  <app-rating-summary [summary]="summary()" />
+
+  <div class="reviews-filters" appFadeIn>
+    @for (item of content.reviewFilters; track item.value) {
+      <button
+        type="button"
+        class="filter-tab"
+        [class.active]="filter() === item.value"
+        (click)="selectFilter(item.value)"
+      >
+        {{ item.label }}
+      </button>
+    }
+  </div>
+
+  <div class="reviews-list">
+    @for (review of list(); track review.id) {
+      <app-review-card [review]="review" (helpful)="markHelpful($event)" />
+    } @empty {
+      <p class="empty-state">{{ content.reviewsPage.emptyText }}</p>
+    }
+  </div>
+
+  <div class="write-review-wrap">
+    <div class="write-review-cta" appFadeIn>
+      <h3>{{ content.reviewsPage.writeTitle }}</h3>
+      <p>{{ content.reviewsPage.writeText }}</p>
+      <button type="button" (click)="writeReview()">{{ content.reviewsPage.writeButton }}</button>
+    </div>
+  </div>
+</div>

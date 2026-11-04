@@ -1,0 +1,88 @@
+<div class="auth-shell">
+  <div class="auth-card wide">
+    <h1>{{ locale.t('register.title') }}</h1>
+    <p class="auth-sub">{{ locale.t('register.subtitle') }}</p>
+
+    @if (error()) {
+      <div class="alert alert-error" role="alert">{{ error() }}</div>
+    }
+
+    <form class="auth-form" (submit)="submit($event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">{{ locale.t('register.firstName') }}</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            autocomplete="given-name"
+            required
+            [ngModel]="firstName()"
+            (ngModelChange)="firstName.set($event)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="lastName">{{ locale.t('register.lastName') }}</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            autocomplete="family-name"
+            [ngModel]="lastName()"
+            (ngModelChange)="lastName.set($event)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">{{ locale.t('register.email') }}</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+          required
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">{{ locale.t('register.password') }}</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            [placeholder]="locale.t('register.passwordHint')"
+            required
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">{{ locale.t('register.confirmPassword') }}</label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            required
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="submitting()">
+        {{ submitting() ? locale.t('register.submitting') : locale.t('register.submit') }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      {{ locale.t('register.haveAccount') }} <a routerLink="/login">{{ locale.t('register.signIn') }}</a>
+    </p>
+  </div>
+</div>

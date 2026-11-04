@@ -1,0 +1,37 @@
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <a class="logo" routerLink="/">
+        {{ content.brand.shortName }}<span>{{ content.brand.suffix }}</span>
+      </a>
+      <p>{{ content.footerTagline }}</p>
+      <div class="social-links">
+        @for (social of content.socialLinks; track social.label) {
+          <a [href]="social.href" [title]="social.title" target="_blank" rel="noopener">
+            {{ social.label }}
+          </a>
+        }
+      </div>
+    </div>
+
+    @for (column of content.footerColumns; track column.title) {
+      <div class="footer-col">
+        <h4>{{ column.title }}</h4>
+        <ul>
+          @for (link of column.links; track link.label) {
+            <li>
+              <a [routerLink]="link.route" [queryParams]="queryParamsFor(link.filter)">
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+
+  <div class="footer-bottom">
+    <span>© {{ year }} {{ content.brand.name }}. {{ locale.t('footer.rights') }}</span>
+    <span>{{ locale.t('footer.madeIn') }}</span>
+  </div>
+</footer>

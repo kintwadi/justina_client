@@ -1,0 +1,464 @@
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(250, 248, 245, 0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+  transition: all 0.3s;
+}
+
+.site-nav.scrolled {
+  box-shadow: 0 2px 20px var(--color-shadow);
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.logo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-image {
+  display: block;
+  max-height: 44px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+}
+
+.logo-text {
+  display: inline-block;
+}
+
+.logo-text span {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--color-text-light);
+  font-family: var(--font-body);
+  margin-top: 4px;
+}
+
+.nav-links {
+  display: none;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--color-text);
+  font-size: 12px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.3s;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+  transition: width 0.3s;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--color-accent);
+}
+
+.nav-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.locale-switchers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.locale-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-white);
+  cursor: pointer;
+  line-height: 1;
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text);
+  text-align: left;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.locale-control:hover,
+.locale-control:focus-within {
+  border-color: var(--color-accent);
+}
+
+.locale-control:focus-within {
+  box-shadow: 0 0 0 3px rgba(150, 116, 92, 0.16);
+}
+
+.locale-flag {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.locale-symbol {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.locale-code {
+  display: none;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.locale-native {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.locale-picker {
+  position: relative;
+  display: flex;
+}
+
+.locale-chevron {
+  color: var(--color-text-light);
+  transition: transform 0.2s ease;
+}
+
+.locale-picker.open .locale-chevron {
+  transform: rotate(180deg);
+}
+
+.locale-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 210px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  box-shadow: 0 22px 52px rgba(44, 36, 32, 0.18);
+  padding: 8px;
+  z-index: 1200;
+  animation: localeIn 0.18s ease;
+}
+
+.locale-menu-title {
+  margin: 0;
+  padding: 8px 12px 6px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+.locale-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 11px;
+  background: none;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.locale-option:hover {
+  background: var(--color-bg-dark);
+}
+
+.locale-option.active {
+  background: rgba(150, 116, 92, 0.1);
+}
+
+.locale-option .locale-flag {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.locale-option-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.2;
+  flex: 1;
+  min-width: 0;
+}
+
+.locale-option-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.locale-option-code {
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+.locale-option.active .locale-option-name,
+.locale-option.active .locale-option-code {
+  color: var(--color-accent);
+}
+
+.locale-option-check {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+@keyframes localeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.nav-icon {
+  cursor: pointer;
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  transition: color 0.3s;
+}
+
+.nav-icon:hover {
+  color: var(--color-accent);
+}
+
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.mobile-menu-btn {
+  display: block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.account {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  min-width: 232px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 48px rgba(44, 36, 32, 0.16);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: accountIn 0.2s ease;
+  z-index: 1100;
+}
+
+@keyframes accountIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.account-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 12px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 6px;
+}
+
+.account-identity strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.account-identity span {
+  font-size: 12px;
+  color: var(--color-text-light);
+  word-break: break-all;
+}
+
+.account-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.account-link:hover {
+  background: var(--color-bg-dark);
+  color: var(--color-accent);
+}
+
+/* Mobile dropdown menu (base). Desktop resets it to an inline row at >=768px. */
+.nav-links.open {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-bg);
+  padding: 20px;
+  border-bottom: 1px solid var(--color-border);
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .nav-container {
+    padding: 20px 40px;
+  }
+
+  .logo {
+    font-size: 26px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+  }
+
+  .nav-links.open {
+    position: static;
+    flex-direction: row;
+    background: none;
+    padding: 0;
+    border-bottom: none;
+    gap: 36px;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+  }
+
+  .nav-icons {
+    gap: 20px;
+  }
+
+  .locale-switchers {
+    gap: 8px;
+  }
+
+  .locale-control {
+    padding: 6px 10px;
+  }
+
+  .locale-code {
+    display: inline;
+  }
+}

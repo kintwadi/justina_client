@@ -1,0 +1,179 @@
+<nav class="site-nav" [class.scrolled]="scrolled()">
+  <div class="nav-container">
+    <a class="logo" routerLink="/" (click)="closeMenu()">
+      @if (headerButtons().logoImageUrl) {
+        <span class="logo-brand">
+          <img class="logo-image" [src]="headerButtons().logoImageUrl" [alt]="content.brand.name" />
+          @if (headerButtons().showLogoTextWithImage) {
+            <span class="logo-text">
+              {{ content.brand.shortName }}<span>{{ content.brand.suffix }}</span>
+            </span>
+          }
+        </span>
+      } @else {
+        <span class="logo-text">
+          {{ content.brand.shortName }}<span>{{ content.brand.suffix }}</span>
+        </span>
+      }
+    </a>
+
+    <ul class="nav-links" [class.open]="ui.mobileMenuOpen()">
+      @for (link of navLinks(); track link.route) {
+        <li>
+          <a
+            [routerLink]="link.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+            (click)="closeMenu()"
+          >
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+
+    <div class="nav-icons">
+      @if (headerButtons().showLanguage || headerButtons().showCurrency) {
+        <div class="locale-switchers">
+          @if (headerButtons().showLanguage) {
+            <div class="locale-picker" [class.open]="languageOpen()">
+              <button
+                type="button"
+                class="locale-control"
+                [title]="locale.t('nav.language')"
+                aria-haspopup="listbox"
+                [attr.aria-expanded]="languageOpen()"
+                (click)="toggleLanguage()"
+              >
+                <span class="locale-flag">
+                  <app-icon [name]="flagIcon()" [size]="18" />
+                </span>
+                <span class="locale-code">{{ locale.language().toUpperCase() }}</span>
+                <app-icon class="locale-chevron" name="chevron-down" [size]="13" />
+              </button>
+
+              @if (languageOpen()) {
+                <div class="locale-menu" role="listbox" [attr.aria-label]="locale.t('nav.language')">
+                  <p class="locale-menu-title">{{ locale.t('nav.language') }}</p>
+                  @for (language of locale.languages; track language.code) {
+                    <button
+                      type="button"
+                      class="locale-option"
+                      role="option"
+                      [class.active]="language.code === locale.language()"
+                      [attr.aria-selected]="language.code === locale.language()"
+                      (click)="selectLanguage(language.code)"
+                    >
+                      <span class="locale-flag">
+                        <app-icon [name]="language.flagIcon" [size]="18" />
+                      </span>
+                      <span class="locale-option-label">
+                        <span class="locale-option-name">{{ language.label }}</span>
+                        <span class="locale-option-code">{{ language.code.toUpperCase() }}</span>
+                      </span>
+                      @if (language.code === locale.language()) {
+                        <app-icon class="locale-option-check" name="check" [size]="16" />
+                      }
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          @if (headerButtons().showCurrency) {
+            <div class="locale-control" [title]="locale.t('nav.currency')">
+              <span class="locale-symbol">{{ locale.activeCurrency()?.symbol ?? '€' }}</span>
+              <span class="locale-code">{{ locale.currency() }}</span>
+              <app-icon class="locale-chevron" name="chevron-down" [size]="13" />
+              <select
+                class="locale-native"
+                [ngModel]="locale.currency()"
+                (ngModelChange)="changeCurrency($event)"
+                [attr.aria-label]="locale.t('nav.currency')"
+              >
+                @for (option of locale.currencies(); track option.code) {
+                  <option [value]="option.code">{{ option.code }}</option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      }
+
+      @if (headerButtons().showSearch) {
+        <button class="nav-icon" type="button" [title]="locale.t('nav.search')" (click)="openSearch()">
+          <app-icon name="search" />
+        </button>
+      }
+
+      @if (headerButtons().showCart) {
+        <button class="nav-icon" type="button" [title]="locale.t('nav.cart')" (click)="ui.openCart()">
+          <app-icon name="cart" />
+          <span class="cart-count">{{ cart.count() }}</span>
+        </button>
+      }
+
+      @if (headerButtons().showAccount) {
+        @if (auth.isAuthenticated()) {
+          <div class="account">
+            <button
+              class="nav-icon"
+              type="button"
+              [title]="locale.t('nav.account')"
+              aria-haspopup="menu"
+              [attr.aria-expanded]="accountOpen()"
+              (click)="toggleAccount()"
+            >
+              <app-icon name="user" />
+            </button>
+
+            @if (accountOpen()) {
+              <div class="account-menu" role="menu">
+                <div class="account-identity">
+                  <strong>{{ auth.user()?.firstName }} {{ auth.user()?.lastName }}</strong>
+                  <span>{{ auth.user()?.email }}</span>
+                </div>
+
+                <a class="account-link" routerLink="/account" (click)="closeAccount()">
+                  <app-icon name="user" [size]="16" />
+                  {{ locale.t('nav.accountSettings') }}
+                </a>
+
+                <a class="account-link" routerLink="/account" fragment="orders" (click)="closeAccount()">
+                  <app-icon name="book" [size]="16" />
+                  {{ locale.t('nav.orders') }}
+                </a>
+
+                @if (auth.isStaff()) {
+                  <a class="account-link" routerLink="/admin" (click)="closeAccount()">
+                    <app-icon name="layers" [size]="16" />
+                    {{ locale.t('nav.adminPanel') }}
+                  </a>
+                }
+
+                <button class="account-link" type="button" (click)="logout()">
+                  <app-icon name="logout" [size]="16" />
+                  {{ locale.t('nav.signOut') }}
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a class="nav-icon" routerLink="/login" [title]="locale.t('nav.signIn')">
+            <app-icon name="user" />
+          </a>
+        }
+      }
+
+      <button
+        class="mobile-menu-btn"
+        type="button"
+        [attr.aria-label]="locale.t('nav.toggle')"
+        (click)="ui.toggleMobileMenu()"
+      >
+        <app-icon [name]="ui.mobileMenuOpen() ? 'close' : 'menu'" [size]="22" />
+      </button>
+    </div>
+  </div>
+</nav>

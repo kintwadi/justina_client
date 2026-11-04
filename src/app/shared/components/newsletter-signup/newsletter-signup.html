@@ -1,0 +1,17 @@
+<section class="newsletter">
+  <h2>Join the Atelier</h2>
+  <p>
+    Subscribe for exclusive access to new collections, behind-the-scenes content, and special
+    offers.
+  </p>
+  <form class="newsletter-form" (submit)="subscribe()">
+    <input
+      type="email"
+      name="email"
+      placeholder="Enter your email address"
+      [(ngModel)]="email"
+      required
+    />
+    <button type="submit">Subscribe</button>
+  </form>
+</section>

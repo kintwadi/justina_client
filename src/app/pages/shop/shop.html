@@ -1,0 +1,97 @@
+<div class="page">
+  <app-page-header
+    [title]="locale.t('shop.title')"
+    [crumb]="locale.t('shop.crumb')"
+    [subtitle]="locale.t('shop.subtitle')"
+  />
+
+  <div class="shop-search">
+    <div class="search-box">
+      <input
+        #searchInput
+        type="text"
+        [placeholder]="locale.t('shop.searchPlaceholder')"
+        [ngModel]="search()"
+        (ngModelChange)="updateSearch($event)"
+      />
+      @if (search()) {
+        <button type="button" class="clear-btn" (click)="clearSearch()">
+          {{ locale.t('shop.clear') }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="shop-layout">
+    <aside class="shop-sidebar">
+      <div class="filter-group">
+        <h4>{{ locale.t('shop.category') }}</h4>
+        @for (item of categories(); track item.id) {
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="category"
+              [value]="item.id"
+              [checked]="category() === item.id"
+              (change)="selectCategory(item.id)"
+            />
+            {{ item.label }}
+            <span class="count">{{ item.count }}</span>
+          </label>
+        }
+      </div>
+
+      <div class="filter-group">
+        <h4>{{ locale.t('shop.priceRange') }}</h4>
+        @for (range of priceRanges(); track range.value; let index = $index) {
+          <label class="filter-option">
+            <input
+              type="checkbox"
+              [checked]="isRangeSelected(index)"
+              (change)="toggleRange(index)"
+            />
+            {{ range.label }}
+          </label>
+        }
+      </div>
+
+      <div class="filter-group">
+        <h4>{{ locale.t('shop.availability') }}</h4>
+        <label class="filter-option">
+          <input type="checkbox" [checked]="onSaleOnly()" (change)="toggleOnSale()" />
+          {{ locale.t('shop.onSale') }}
+        </label>
+        <label class="filter-option">
+          <input type="checkbox" [checked]="newOnly()" (change)="toggleNew()" />
+          {{ locale.t('shop.newArrivals') }}
+        </label>
+      </div>
+    </aside>
+
+    <div>
+      <div class="shop-toolbar">
+        <div class="results-count">
+          {{ showingText() }}
+        </div>
+        <select
+          [ngModel]="sort()"
+          (ngModelChange)="updateSort($event)"
+          [attr.aria-label]="locale.t('shop.sortLabel')"
+        >
+          @for (option of sortOptions(); track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
+      <app-product-grid [products]="pagedResults()" />
+
+      <app-pagination
+        [page]="page()"
+        [totalItems]="totalResults()"
+        [pageSize]="pageSize"
+        (pageChange)="changePage($event)"
+      />
+    </div>
+  </div>
+</div>
