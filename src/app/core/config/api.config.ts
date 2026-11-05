@@ -1,17 +1,19 @@
-type RuntimeAppConfig = {
-  API_BASE_URL?: string;
-};
-
-const runtimeConfig = (globalThis as typeof globalThis & {
-  __APP_CONFIG__?: RuntimeAppConfig;
-}).__APP_CONFIG__;
-
 /**
- * Location of the Spring Boot REST API. In Docker/Render this is provided by a small runtime
- * config file generated from the container environment; local development falls back to localhost.
+ * Location of the Spring Boot REST API. Change this value (or the deployment environment) when
+ * the backend is not served from the default local port.
+ 
+export const API_BASE_URL = 'http://localhost:8080';
+
+export const API_URL = `${API_BASE_URL}/api`;
+*/
+
+/** 
+ * Location of the Spring Boot REST API. 
+ * Reads from the .env file (via process.env) and falls back to localhost if not defined.
  */
-export const API_BASE_URL =
-  runtimeConfig?.API_BASE_URL?.replace(/\/+$/, '') || 'http://localhost:8080';
+export const API_BASE_URL = process.env['API_BASE_URL '] || 'http://localhost:8080';
 
 /** Root of the versioned API surface consumed by every data service. */
 export const API_URL = `${API_BASE_URL}/api`;
+
+
